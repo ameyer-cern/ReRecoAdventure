@@ -25,8 +25,6 @@ def das_get_runs(dataset):
    if not dataset:
       return set()
 
-   return set([0])
-
    stream = os.popen('dasgoclient --query="run dataset=' + dataset + '"')
    return set([int(r.strip()) for r in stream.read().split('\n') if r.strip()])
 
