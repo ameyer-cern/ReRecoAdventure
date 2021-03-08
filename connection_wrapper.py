@@ -11,12 +11,12 @@ class ConnectionWrapper():
     """
     Wrapper class to re-use existing connection
     """
-    def __init__(self, host, timeout, keep_open):
+    def __init__(self, host, timeout=60, keep_open=False):
         self.connection = None
         self.connection_attempts = 3
         self.host_url = host.replace('https://', '').replace('http://', '')
-        self.cert_file = os.getenv('USERCRT', None)
-        self.key_file = os.getenv('USERKEY', None)
+        self.cert_file = None
+        self.key_file = None
         self.logger = logging.getLogger('logger')
         self.timeout = timeout
         self.keep_open = keep_open
@@ -25,12 +25,16 @@ class ConnectionWrapper():
         """
         Create a new connection
         """
-        if self.cert_file is None or self.key_file is None:
+        if not self.cert_file or not self.key_file:
             self.cert_file = os.getenv('USERCRT', None)
             self.key_file = os.getenv('USERKEY', None)
 
-        if self.cert_file is None or self.key_file is None:
-            raise Exception('Missing USERCRT or USERKEY environment variables')
+        if not self.cert_file or not self.key_file:
+            self.cert_file = os.getenv('X509_USER_PROXY', None)
+            self.key_file = os.getenv('X509_USER_PROXY', None)
+
+        if not self.cert_file or not self.key_file:
+            raise Exception('Missing USERCRT or USERKEY or X509_USER_PROXY environment variables')
 
         return http.client.HTTPSConnection(url,
                                            port=443,
@@ -45,7 +49,7 @@ class ConnectionWrapper():
         # self.logger.info('Refreshing connection')
         self.connection = self.init_connection(url)
 
-    def api(self, method, url, data):
+    def api(self, method, url, data=None):
         """
         Make a HTTP request with given method, url and data
         """
@@ -53,36 +57,27 @@ class ConnectionWrapper():
             self.refresh_connection(self.host_url)
 
         url = url.replace('#', '%23')
-        # this way saves time for creating connection per every request
         for _ in range(self.connection_attempts):
             try:
                 data = json.dumps(data) if data else None
                 self.connection.request(method, url, data, headers={'Accept': 'application/json'})
                 response = self.connection.getresponse()
                 if response.status != 200:
-                    logger = logging.getLogger('logger')
-                    logger.info('Problems (%d) with [%s] %s: %s',
-                                response.status,
-                                method,
-                                url,
-                                response.read())
+                    self.logger.info('Problems (%d) with [%s] %s: %s',
+                                     response.status,
+                                     method,
+                                     url,
+                                     response.read())
                     return None
 
                 response_to_return = response.read()
                 if not self.keep_open:
-                    # logger = logging.getLogger('logger')
-                    # logger.info('Closing connection for %s. Timeout %s',
-                    #             self.host_url,
-                    #             self.timeout)
                     self.connection.close()
                     self.connection = None
 
                 return response_to_return
-            # except http.client.BadStatusLine:
-            #     raise RuntimeError('Something is really wrong')
+
             except Exception as ex:
-                # self.logger.error('Exception while doing [%s] to %s: %s', method, url, str(ex))
-                # most likely connection terminated
                 self.refresh_connection(self.host_url)
 
         self.logger.error('Connection wrapper failed after %d attempts', self.connection_attempts)
