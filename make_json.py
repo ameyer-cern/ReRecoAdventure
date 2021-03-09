@@ -144,13 +144,13 @@ datasets = sorted(datasets)
 
 
 years = {'2016': {'twiki_file_name': '2016ULdataFromTwiki.txt',
-                  'aod_tag': '21Feb2020_UL2016',
+                  'aod_tag': ['21Feb2020_UL2016', '21Feb2020_ver1_UL2016_HIPM', '21Feb2020_ver2_UL2016_HIPM'],
                   'dcs_json_path': '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/DCSOnly/json_DCSONLY.txt'},
          '2017': {'twiki_file_name': '2017ULdataFromTwiki.txt',
-                  'aod_tag': '09Aug2019_UL2017',
+                  'aod_tag': ['09Aug2019_UL2017'],
                   'dcs_json_path': '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/DCSOnly/json_DCSONLY.txt'},
          '2018': {'twiki_file_name': '2018ULdataFromTwiki.txt',
-                  'aod_tag': '12Nov2019_UL2018',
+                  'aod_tag': ['12Nov2019_UL2018'],
                   'dcs_json_path': '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/DCSOnly/json_DCSONLY.txt'}}
 
 
@@ -171,7 +171,7 @@ for index, raw_dataset in enumerate(datasets):
 
     # Year
     print('  Year is %s' % (year))
-    tag = year_info['aod_tag']
+    aod_tags = year_info['aod_tag']
     dcs_runs = year_info['dcs_json']
     # TWiki row
     twiki_runs = set()
@@ -183,7 +183,7 @@ for index, raw_dataset in enumerate(datasets):
     print('  Twiki runs: %s' % (len(twiki_runs)))
     # RAW dataset
     raw_input_workflows = get_workflows_for_input(raw_dataset)
-    raw_input_workflows = [w for w in raw_input_workflows if tag in w['ProcessingString']]
+    raw_input_workflows = [w for w in raw_input_workflows if [tag for tag in aod_tags if tag in w['ProcessingString']]]
     raw_events = das_get_events(raw_dataset)
     raw_runs = das_get_runs(raw_dataset)
     raw_dcs_matched_runs = set(raw_runs).intersection(set(dcs_runs))

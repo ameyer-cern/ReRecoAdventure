@@ -40,7 +40,7 @@
         background: #c8c8c8;
       }
       .orange-cell {
-        background: #f4bc91;
+        background: #fae3d2;
       }
       .green-cell {
         background: #bae0ce;
@@ -73,10 +73,17 @@
             <br>
             <small>RAW x DCS Events</small>
           </th>
-          <th colspan="2">
-            TWiki
+          <th rowspan="2">
+            Whitelist Runs
+            <br>
+            <small>Whitelist x RAW events</small>
           </th>
-          <th colspan="5">
+          <th rowspan="2">
+            Whitelist x DCS Runs
+            <br>
+            <small>Whitelist x DCS x RAW events</small>
+          </th>
+          <th colspan="3">
             AOD
           </th>
           <th colspan="3">
@@ -87,18 +94,6 @@
           </th>
         </tr>
         <tr>
-          <th>Runs</th>
-          <th>Diff RAWxDCS</th>
-          <th>
-            Whitelist Runs
-            <br>
-            <small>Whitelist x RAW events</small>
-          </th>
-          <th>
-            Whitelist x DCS Runs
-            <br>
-            <small>Whitelist x DCS x RAW events</small>
-          </th>
           <th>
             <span class="sort" @click="changeSortToColumn('aod_dataset')">Dataset</span>
             <br>
@@ -146,17 +141,6 @@
               </td>
               <td :rowspan="item.rowspan">
                 {{item.raw_x_dcs_runs}} runs<br><small>{{item.raw_x_dcs_events}} events</small>
-              </td>
-              <td :rowspan="item.rowspan">
-                {{item.twiki_runs}} runs
-              </td>
-              <td :rowspan="item.rowspan">
-                <template v-if="item.twiki_missing_runs">
-                  -{{item.twiki_missing_runs}} runs<br>
-                </template>
-                <template v-if="item.twiki_surplus_runs">
-                  +{{item.twiki_surplus_runs}} runs<br>
-                </template>
               </td>
             </template>
             <template v-if="!item.year && item.rowspan">
@@ -356,7 +340,7 @@
             if (item.fraction < 1 && item.fraction >= 0.999) {
               return 'light-green-cell';
             }
-            return 'light-red-cell';
+            return '';
           },
         }
       })
