@@ -94,22 +94,27 @@
           type="checkbox"
           :checked="columns.miniaod_v1"
           @input="columns.miniaod_v1 = $event.target.checked"
-        /> MiniAOD v1
+        /> MiniAODv1
         <input
           type="checkbox"
-          :checked="columns.miniaod_v1_nanoaod"
-          @input="columns.miniaod_v1_nanoaod = $event.target.checked"
-        /> MiniAOD v1 NanoAOD
+          :checked="columns.miniaod_v1_nanoaod_v6"
+          @input="columns.miniaod_v1_nanoaod_v6 = $event.target.checked"
+        /> MiniAODv1 NanoAODv6
+        <input
+          type="checkbox"
+          :checked="columns.miniaod_v1_nanoaod_v8"
+          @input="columns.miniaod_v1_nanoaod_v8 = $event.target.checked"
+        /> MiniAODv1 NanoAODv8
         <input
           type="checkbox"
           :checked="columns.miniaod_v2"
           @input="columns.miniaod_v2 = $event.target.checked"
-        /> MiniAOD v2
+        /> MiniAODv2
         <input
           type="checkbox"
-          :checked="columns.miniaod_v2_nanoaod"
-          @input="columns.miniaod_v2_nanoaod = $event.target.checked"
-        /> MiniAOD v2 NanoAOD
+          :checked="columns.miniaod_v2_nanoaod_v9"
+          @input="columns.miniaod_v2_nanoaod_v9 = $event.target.checked"
+        /> MiniAODv2 NanoAODv9
         <br>
         <input
           type="checkbox"
@@ -173,14 +178,17 @@
           <th v-if="columns.miniaod_v1" :colspan="columns.diff_whitelist_x_dcs_runs && columns.produced_expected ? 3 : columns.diff_whitelist_x_dcs_runs || columns.produced_expected ? 2 : 1">
             MiniAODv1
           </th>
-          <th v-if="columns.miniaod_v1_nanoaod" :colspan="columns.diff_whitelist_x_dcs_runs && columns.produced_expected ? 3 : columns.diff_whitelist_x_dcs_runs || columns.produced_expected ? 2 : 1">
-            MiniAODv1's NanoAOD
+          <th v-if="columns.miniaod_v1_nanoaod_v6" :colspan="columns.diff_whitelist_x_dcs_runs && columns.produced_expected ? 3 : columns.diff_whitelist_x_dcs_runs || columns.produced_expected ? 2 : 1">
+            MiniAODv1 NanoAODv6
+          </th>
+          <th v-if="columns.miniaod_v1_nanoaod_v8" :colspan="columns.diff_whitelist_x_dcs_runs && columns.produced_expected ? 3 : columns.diff_whitelist_x_dcs_runs || columns.produced_expected ? 2 : 1">
+            MiniAODv1 NanoAODv8
           </th>
           <th v-if="columns.miniaod_v2" :colspan="columns.diff_whitelist_x_dcs_runs && columns.produced_expected ? 3 : columns.diff_whitelist_x_dcs_runs || columns.produced_expected ? 2 : 1">
             MiniAODv2
           </th>
-          <th v-if="columns.miniaod_v2_nanoaod" :colspan="columns.diff_whitelist_x_dcs_runs && columns.produced_expected ? 3 : columns.diff_whitelist_x_dcs_runs || columns.produced_expected ? 2 : 1">
-            MiniAODv2's NanoAOD
+          <th v-if="columns.miniaod_v2_nanoaod_v9" :colspan="columns.diff_whitelist_x_dcs_runs && columns.produced_expected ? 3 : columns.diff_whitelist_x_dcs_runs || columns.produced_expected ? 2 : 1">
+            MiniAODv2 NanoAODv9
           </th>
         </tr>
         <tr>
@@ -220,19 +228,34 @@
               <small class="sort" @click="changeSortToColumn('miniaod_v1_events')">Produced events</small>
             </th>
           </template>
-          <template v-if="columns.miniaod_v1_nanoaod">
-            <th :class="sortOn == 'miniaod_v1_nanoaod_dataset' || sortOn == 'miniaod_v1_nanoaod_prepid' ? 'sorted-by' : ''">
-              <span class="sort" @click="changeSortToColumn('miniaod_v1_nanoaod_dataset')">Dataset</span>&nbsp;
+          <template v-if="columns.miniaod_v1_nanoaod_v6">
+            <th :class="sortOn == 'miniaod_v1_nanoaod_v6_dataset' || sortOn == 'miniaod_v1_nanoaod_v6_prepid' ? 'sorted-by' : ''">
+              <span class="sort" @click="changeSortToColumn('miniaod_v1_nanoaod_v6_dataset')">Dataset</span>&nbsp;
               <br>
-              <small class="sort" @click="changeSortToColumn('miniaod_v1_nanoaod_prepid')">PrepID</small>
+              <small class="sort" @click="changeSortToColumn('miniaod_v1_nanoaod_v6_prepid')">PrepID</small>
             </th>
-            <th :class="sortOn == 'miniaod_v1_nanoaod_runs_diff' ? 'sorted-by' : ''" v-if="columns.diff_whitelist_x_dcs_runs">
-              <span class="sort" @click="changeSortToColumn('miniaod_v1_nanoaod_whitelist_x_dcs_runs_diff')">Diff to Whitelist x DCS</span>
+            <th :class="sortOn == 'miniaod_v1_nanoaod_v6_runs_diff' ? 'sorted-by' : ''" v-if="columns.diff_whitelist_x_dcs_runs">
+              <span class="sort" @click="changeSortToColumn('miniaod_v1_nanoaod_v6_whitelist_x_dcs_runs_diff')">Diff to Whitelist x DCS</span>
             </th>
-            <th :class="sortOn == 'miniaod_v1_nanoaod_whitelist_x_dcs_ratio' || sortOn == 'miniaod_v1_nanoaod_events'  ? 'sorted-by' : ''" v-if="columns.produced_expected">
-              <span class="sort" @click="changeSortToColumn('miniaod_v1_nanoaod_whitelist_x_dcs_ratio')">Produced/Expected</span>
+            <th :class="sortOn == 'miniaod_v1_nanoaod_v6_whitelist_x_dcs_ratio' || sortOn == 'miniaod_v1_nanoaod_v6_events'  ? 'sorted-by' : ''" v-if="columns.produced_expected">
+              <span class="sort" @click="changeSortToColumn('miniaod_v1_nanoaod_v6_whitelist_x_dcs_ratio')">Produced/Expected</span>
               <br>
-              <small class="sort" @click="changeSortToColumn('miniaod_v1_nanoaod_events')">Produced events</small>
+              <small class="sort" @click="changeSortToColumn('miniaod_v1_nanoaod_v6_events')">Produced events</small>
+            </th>
+          </template>
+          <template v-if="columns.miniaod_v1_nanoaod_v8">
+            <th :class="sortOn == 'miniaod_v1_nanoaod_v8_dataset' || sortOn == 'miniaod_v1_nanoaod_v8_prepid' ? 'sorted-by' : ''">
+              <span class="sort" @click="changeSortToColumn('miniaod_v1_nanoaod_v8_dataset')">Dataset</span>&nbsp;
+              <br>
+              <small class="sort" @click="changeSortToColumn('miniaod_v1_nanoaod_v8_prepid')">PrepID</small>
+            </th>
+            <th :class="sortOn == 'miniaod_v1_nanoaod_v8_runs_diff' ? 'sorted-by' : ''" v-if="columns.diff_whitelist_x_dcs_runs">
+              <span class="sort" @click="changeSortToColumn('miniaod_v1_nanoaod_v8_whitelist_x_dcs_runs_diff')">Diff to Whitelist x DCS</span>
+            </th>
+            <th :class="sortOn == 'miniaod_v1_nanoaod_v8_whitelist_x_dcs_ratio' || sortOn == 'miniaod_v1_nanoaod_v8_events'  ? 'sorted-by' : ''" v-if="columns.produced_expected">
+              <span class="sort" @click="changeSortToColumn('miniaod_v1_nanoaod_v8_whitelist_x_dcs_ratio')">Produced/Expected</span>
+              <br>
+              <small class="sort" @click="changeSortToColumn('miniaod_v1_nanoaod_v8_events')">Produced events</small>
             </th>
           </template>
           <template v-if="columns.miniaod_v2">
@@ -250,19 +273,19 @@
               <small class="sort" @click="changeSortToColumn('miniaod_v2_events')">Produced events</small>
             </th>
           </template>
-          <template v-if="columns.miniaod_v2_nanoaod">
-            <th :class="sortOn == 'miniaod_v2_nanoaod_dataset' || sortOn == 'miniaod_v2_nanoaod_prepid' ? 'sorted-by' : ''">
-              <span class="sort" @click="changeSortToColumn('miniaod_v2_nanoaod_dataset')">Dataset</span>&nbsp;
+          <template v-if="columns.miniaod_v2_nanoaod_v9">
+            <th :class="sortOn == 'miniaod_v2_nanoaod_v9_dataset' || sortOn == 'miniaod_v2_nanoaod_v9_prepid' ? 'sorted-by' : ''">
+              <span class="sort" @click="changeSortToColumn('miniaod_v2_nanoaod_v9_dataset')">Dataset</span>&nbsp;
               <br>
-              <small class="sort" @click="changeSortToColumn('miniaod_v2_nanoaod_prepid')">PrepID</small>
+              <small class="sort" @click="changeSortToColumn('miniaod_v2_nanoaod_v9_prepid')">PrepID</small>
             </th>
-            <th :class="sortOn == 'miniaod_v2_nanoaod_runs_diff' ? 'sorted-by' : ''" v-if="columns.diff_whitelist_x_dcs_runs">
-              <span class="sort" @click="changeSortToColumn('miniaod_v2_nanoaod_whitelist_x_dcs_runs_diff')">Diff to Whitelist x DCS</span>
+            <th :class="sortOn == 'miniaod_v2_nanoaod_v9_runs_diff' ? 'sorted-by' : ''" v-if="columns.diff_whitelist_x_dcs_runs">
+              <span class="sort" @click="changeSortToColumn('miniaod_v2_nanoaod_v9_whitelist_x_dcs_runs_diff')">Diff to Whitelist x DCS</span>
             </th>
-            <th :class="sortOn == 'miniaod_v2_nanoaod_whitelist_x_dcs_ratio' || sortOn == 'miniaod_v2_nanoaod_events'  ? 'sorted-by' : ''" v-if="columns.produced_expected">
-              <span class="sort" @click="changeSortToColumn('miniaod_v2_nanoaod_whitelist_x_dcs_ratio')">Produced/Expected</span>
+            <th :class="sortOn == 'miniaod_v2_nanoaod_v9_whitelist_x_dcs_ratio' || sortOn == 'miniaod_v2_nanoaod_v9_events'  ? 'sorted-by' : ''" v-if="columns.produced_expected">
+              <span class="sort" @click="changeSortToColumn('miniaod_v2_nanoaod_v9_whitelist_x_dcs_ratio')">Produced/Expected</span>
               <br>
-              <small class="sort" @click="changeSortToColumn('miniaod_v2_nanoaod_events')">Produced events</small>
+              <small class="sort" @click="changeSortToColumn('miniaod_v2_nanoaod_v9_events')">Produced events</small>
             </th>
           </template>
         </tr>
@@ -357,31 +380,64 @@
             </template>
           </template>
 
-          <template v-if="columns.miniaod_v1_nanoaod">
-            <td :class="row['miniaod_v1_nanoaod_dataset_status'] == 'PRODUCTION' ? 'orange-cell' : ''">
-              <a target="_blank" :href="makeDASLink(row['miniaod_v1_nanoaod_dataset'])">{{row['miniaod_v1_nanoaod_dataset']}}</a>
+          <template v-if="columns.miniaod_v1_nanoaod_v6">
+            <td :class="row['miniaod_v1_nanoaod_v6_dataset_status'] == 'PRODUCTION' ? 'orange-cell' : ''">
+              <a target="_blank" :href="makeDASLink(row['miniaod_v1_nanoaod_v6_dataset'])">{{row['miniaod_v1_nanoaod_v6_dataset']}}</a>
               <br>
-              <small><a target="_blank" :href="makeDimaLink(row['miniaod_v1_prepid'])">{{row['miniaod_v1_nanoaod_prepid']}}</a></small>
+              <small><a target="_blank" :href="makeDimaLink(row['miniaod_v1_prepid'])">{{row['miniaod_v1_nanoaod_v6_prepid']}}</a></small>
             </td>
-            <template v-if="row['miniaod_v1_nanoaod_dataset']">
+            <template v-if="row['miniaod_v1_nanoaod_v6_dataset']">
               <td v-if="columns.diff_whitelist_x_dcs_runs">
-                <template v-if="row['miniaod_v1_nanoaod_whitelist_x_dcs_surplus_runs']">
-                  Surplus {{row['miniaod_v1_nanoaod_whitelist_x_dcs_surplus_runs']}} runs<br>
+                <template v-if="row['miniaod_v1_nanoaod_v6_whitelist_x_dcs_surplus_runs']">
+                  Surplus {{row['miniaod_v1_nanoaod_v6_whitelist_x_dcs_surplus_runs']}} runs<br>
                 </template>
-                <template v-if="row['miniaod_v1_nanoaod_whitelist_x_dcs_missing_runs']">
-                  Missing {{row['miniaod_v1_nanoaod_whitelist_x_dcs_missing_runs']}} runs<br>
+                <template v-if="row['miniaod_v1_nanoaod_v6_whitelist_x_dcs_missing_runs']">
+                  Missing {{row['miniaod_v1_nanoaod_v6_whitelist_x_dcs_missing_runs']}} runs<br>
                 </template>
-                <template v-if="row['miniaod_v1_nanoaod_events'] > row['whitelist_x_dcs_events']">
-                  Surplus {{row['miniaod_v1_nanoaod_events'] - row['whitelist_x_dcs_events']}} events
+                <template v-if="row['miniaod_v1_nanoaod_v6_events'] > row['whitelist_x_dcs_events']">
+                  Surplus {{row['miniaod_v1_nanoaod_v6_events'] - row['whitelist_x_dcs_events']}} events
                 </template>
-                <template v-if="row['miniaod_v1_nanoaod_events'] < row['whitelist_x_dcs_events']">
-                  Missing {{row['whitelist_x_dcs_events'] - row['miniaod_v1_nanoaod_events']}} events
+                <template v-if="row['miniaod_v1_nanoaod_v6_events'] < row['whitelist_x_dcs_events']">
+                  Missing {{row['whitelist_x_dcs_events'] - row['miniaod_v1_nanoaod_v6_events']}} events
                 </template>
               </td>
               <td v-if="columns.produced_expected">
-                {{row['miniaod_v1_nanoaod_whitelist_x_dcs_ratio']}}
+                {{row['miniaod_v1_nanoaod_v6_whitelist_x_dcs_ratio']}}
                 <br>
-                <small>{{row['miniaod_v1_nanoaod_events']}} events</small>
+                <small>{{row['miniaod_v1_nanoaod_v6_events']}} events</small>
+              </td>
+            </template>
+            <template v-else>
+              <td v-if="columns.diff_whitelist_x_dcs_runs"></td>
+              <td v-if="columns.produced_expected"></td>
+            </template>
+          </template>
+
+          <template v-if="columns.miniaod_v1_nanoaod_v8">
+            <td :class="row['miniaod_v1_nanoaod_v8_dataset_status'] == 'PRODUCTION' ? 'orange-cell' : ''">
+              <a target="_blank" :href="makeDASLink(row['miniaod_v1_nanoaod_v8_dataset'])">{{row['miniaod_v1_nanoaod_v8_dataset']}}</a>
+              <br>
+              <small><a target="_blank" :href="makeDimaLink(row['miniaod_v1_prepid'])">{{row['miniaod_v1_nanoaod_v8_prepid']}}</a></small>
+            </td>
+            <template v-if="row['miniaod_v1_nanoaod_v8_dataset']">
+              <td v-if="columns.diff_whitelist_x_dcs_runs">
+                <template v-if="row['miniaod_v1_nanoaod_v8_whitelist_x_dcs_surplus_runs']">
+                  Surplus {{row['miniaod_v1_nanoaod_v8_whitelist_x_dcs_surplus_runs']}} runs<br>
+                </template>
+                <template v-if="row['miniaod_v1_nanoaod_v8_whitelist_x_dcs_missing_runs']">
+                  Missing {{row['miniaod_v1_nanoaod_v8_whitelist_x_dcs_missing_runs']}} runs<br>
+                </template>
+                <template v-if="row['miniaod_v1_nanoaod_v8_events'] > row['whitelist_x_dcs_events']">
+                  Surplus {{row['miniaod_v1_nanoaod_v8_events'] - row['whitelist_x_dcs_events']}} events
+                </template>
+                <template v-if="row['miniaod_v1_nanoaod_v8_events'] < row['whitelist_x_dcs_events']">
+                  Missing {{row['whitelist_x_dcs_events'] - row['miniaod_v1_nanoaod_v8_events']}} events
+                </template>
+              </td>
+              <td v-if="columns.produced_expected">
+                {{row['miniaod_v1_nanoaod_v8_whitelist_x_dcs_ratio']}}
+                <br>
+                <small>{{row['miniaod_v1_nanoaod_v8_events']}} events</small>
               </td>
             </template>
             <template v-else>
@@ -423,31 +479,31 @@
             </template>
           </template>
 
-          <template v-if="columns.miniaod_v2_nanoaod">
-            <td :class="row['miniaod_v2_nanoaod_dataset_status'] == 'PRODUCTION' ? 'orange-cell' : ''">
-              <a target="_blank" :href="makeDASLink(row['miniaod_v2_nanoaod_dataset'])">{{row['miniaod_v2_nanoaod_dataset']}}</a>
+          <template v-if="columns.miniaod_v2_nanoaod_v9">
+            <td :class="row['miniaod_v2_nanoaod_v9_dataset_status'] == 'PRODUCTION' ? 'orange-cell' : ''">
+              <a target="_blank" :href="makeDASLink(row['miniaod_v2_nanoaod_v9_dataset'])">{{row['miniaod_v2_nanoaod_v9_dataset']}}</a>
               <br>
-              <small><a target="_blank" :href="makeDimaLink(row['miniaod_v2_prepid'])">{{row['miniaod_v2_nanoaod_prepid']}}</a></small>
+              <small><a target="_blank" :href="makeDimaLink(row['miniaod_v2_prepid'])">{{row['miniaod_v2_nanoaod_v9_prepid']}}</a></small>
             </td>
-            <template v-if="row['miniaod_v2_nanoaod_dataset']">
+            <template v-if="row['miniaod_v2_nanoaod_v9_dataset']">
               <td v-if="columns.diff_whitelist_x_dcs_runs">
-                <template v-if="row['miniaod_v2_nanoaod_whitelist_x_dcs_surplus_runs']">
-                  Surplus {{row['miniaod_v2_nanoaod_whitelist_x_dcs_surplus_runs']}} runs<br>
+                <template v-if="row['miniaod_v2_nanoaod_v9_whitelist_x_dcs_surplus_runs']">
+                  Surplus {{row['miniaod_v2_nanoaod_v9_whitelist_x_dcs_surplus_runs']}} runs<br>
                 </template>
-                <template v-if="row['miniaod_v2_nanoaod_whitelist_x_dcs_missing_runs']">
-                  Missing {{row['miniaod_v2_nanoaod_whitelist_x_dcs_missing_runs']}} runs<br>
+                <template v-if="row['miniaod_v2_nanoaod_v9_whitelist_x_dcs_missing_runs']">
+                  Missing {{row['miniaod_v2_nanoaod_v9_whitelist_x_dcs_missing_runs']}} runs<br>
                 </template>
-                <template v-if="row['miniaod_v2_nanoaod_events'] > row['whitelist_x_dcs_events']">
-                  Surplus {{row['miniaod_v2_nanoaod_events'] - row['whitelist_x_dcs_events']}} events
+                <template v-if="row['miniaod_v2_nanoaod_v9_events'] > row['whitelist_x_dcs_events']">
+                  Surplus {{row['miniaod_v2_nanoaod_v9_events'] - row['whitelist_x_dcs_events']}} events
                 </template>
-                <template v-if="row['miniaod_v2_nanoaod_events'] < row['whitelist_x_dcs_events']">
-                  Missing {{row['whitelist_x_dcs_events'] - row['miniaod_v2_nanoaod_events']}} events
+                <template v-if="row['miniaod_v2_nanoaod_v9_events'] < row['whitelist_x_dcs_events']">
+                  Missing {{row['whitelist_x_dcs_events'] - row['miniaod_v2_nanoaod_v9_events']}} events
                 </template>
               </td>
               <td v-if="columns.produced_expected">
-                {{row['miniaod_v2_nanoaod_whitelist_x_dcs_ratio']}}
+                {{row['miniaod_v2_nanoaod_v9_whitelist_x_dcs_ratio']}}
                 <br>
-                <small>{{row['miniaod_v2_nanoaod_events']}} events</small>
+                <small>{{row['miniaod_v2_nanoaod_v9_events']}} events</small>
               </td>
             </template>
             <template v-else>
@@ -467,7 +523,7 @@
           rows: [],
           sortOn: 'year',
           sortOrder: 1,
-          prefixes: ['aod', 'miniaod_v1', 'miniaod_v1_nanoaod', 'miniaod_v2', 'miniaod_v2_nanoaod'],
+          prefixes: ['aod', 'miniaod_v1', 'miniaod_v1_nanoaod_v6', 'miniaod_v1_nanoaod_v8', 'miniaod_v2', 'miniaod_v2_nanoaod_v9'],
           search: {
             input_dataset: undefined,
           },
@@ -482,9 +538,10 @@
             produced_expected: true,
             aod: true,
             miniaod_v1: true,
-            miniaod_v1_nanoaod: true,
+            miniaod_v1_nanoaod_v6: true,
+            miniaod_v1_nanoaod_v8: true,
             miniaod_v2: true,
-            miniaod_v2_nanoaod: true,
+            miniaod_v2_nanoaod_v9: true,
           }
         },
         created (){

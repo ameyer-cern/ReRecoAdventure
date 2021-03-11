@@ -32,13 +32,17 @@ default_miniaod_v2_tags = {'2016': [], # Does not exist
                            '2017': ['UL2017_MiniAODv2'],
                            '2018': ['UL2018_MiniAODv2']}
 
-default_miniaod_v1_nanoaod_tags = {'2016': ['UL2016_MiniAODv1_NanoAODv2', 'HIPM_UL2016_MiniAODv1_NanoAODv2'],
-                                   '2017': ['UL2017_MiniAODv1_NanoAODv2', 'UL2017_02Dec2019'],
-                                   '2018': ['UL2018_MiniAODv1_NanoAODv2']}
+default_miniaod_v1_nanoaod_v6_tags = {'2016': ['Nano02Dec2019', 'Nano02Dec2019_21Feb2020_UL2016_HIPM'],
+                                      '2017': ['Nano02Dec2019', 'UL2017_02Dec2019', 'UL2017_Nano02Dec2019'],
+                                      '2018': ['Nano02Dec2019', 'Nano02Dec2019_12Nov2019_UL2018', 'Nano02Dec2019_12Nov2019_UL2018_rsb_v2']}
 
-default_miniaod_v2_nanoaod_tags = {'2016': [],
-                                   '2017': [],
-                                   '2018': []}
+default_miniaod_v1_nanoaod_v8_tags = {'2016': ['UL2016_MiniAODv1_NanoAODv2', 'HIPM_UL2016_MiniAODv1_NanoAODv2'],
+                                      '2017': ['UL2017_MiniAODv1_NanoAODv2'],
+                                      '2018': ['UL2018_MiniAODv1_NanoAODv2']}
+
+default_miniaod_v2_nanoaod_v9_tags = {'2016': [],
+                                      '2017': [],
+                                      '2018': []}
 
 with open('data.json', 'r') as data_file:
     items = json.load(data_file)
@@ -53,24 +57,23 @@ for item in items:
     aod_tags = default_aod_tags[item['year']]
     miniaod_v1_tags = default_miniaod_v1_tags[item['year']]
     miniaod_v2_tags = default_miniaod_v2_tags[item['year']]
-    miniaod_v1_nanoaod_tags = default_miniaod_v1_nanoaod_tags[item['year']]
-    miniaod_v2_nanoaod_tags = default_miniaod_v2_nanoaod_tags[item['year']]
+    miniaod_v1_nanoaod_v6_tags = default_miniaod_v1_nanoaod_v6_tags[item['year']]
+    miniaod_v1_nanoaod_v8_tags = default_miniaod_v1_nanoaod_v8_tags[item['year']]
+    miniaod_v2_nanoaod_v9_tags = default_miniaod_v2_nanoaod_v9_tags[item['year']]
     if 'Run2016B' in raw_dataset:
-        # Because fuck me
         aod_tags = [['21Feb2020_ver2_UL2016_HIPM', '21Feb2020_ver1_UL2016_HIPM']]
         miniaod_v1_tags = ['21Feb2020_ver2_UL2016_HIPM', '21Feb2020_ver1_UL2016_HIPM']
-        miniaod_v1_nanoaod_tags = ['ver1_HIPM_UL2016_MiniAODv1_NanoAODv2', 'ver2_HIPM_UL2016_MiniAODv1_NanoAODv2']
+        miniaod_v1_nanoaod_v8_tags = ['ver1_HIPM_UL2016_MiniAODv1_NanoAODv2', 'ver2_HIPM_UL2016_MiniAODv1_NanoAODv2']
     elif 'Run2016F' in raw_dataset:
-        # Because fuck me again
         aod_tags = [['21Feb2020_UL2016'], ['21Feb2020_UL2016_HIPM']]
-
 
     for aod_tag_bunch in aod_tags:
         aod = pick_output_item(item.get('output'), aod_tag_bunch)
         miniaod_v1 = pick_output_item(aod.get('output'), miniaod_v1_tags)
         miniaod_v2 = pick_output_item(aod.get('output'), miniaod_v2_tags)
-        miniaod_v1_nanoaod = pick_output_item(miniaod_v1.get('output'), miniaod_v1_nanoaod_tags)
-        miniaod_v2_nanoaod = pick_output_item(miniaod_v2.get('output'), miniaod_v2_nanoaod_tags)
+        miniaod_v1_nanoaod_v6 = pick_output_item(miniaod_v1.get('output'), miniaod_v1_nanoaod_v6_tags)
+        miniaod_v1_nanoaod_v8 = pick_output_item(miniaod_v1.get('output'), miniaod_v1_nanoaod_v8_tags)
+        miniaod_v2_nanoaod_v9 = pick_output_item(miniaod_v2.get('output'), miniaod_v2_nanoaod_v9_tags)
 
         if aod:
             print('  AOD: %s (%s)' % (aod['dataset'], aod['type']))
@@ -78,14 +81,17 @@ for item in items:
         if miniaod_v1:
             print('  MiniAODv1: %s (%s)' % (miniaod_v1['dataset'], miniaod_v1['type']))
 
-        if miniaod_v1_nanoaod:
-            print('    MiniAODv1 NanoAOD: %s (%s)' % (miniaod_v1_nanoaod['dataset'], miniaod_v1_nanoaod['type']))
+        if miniaod_v1_nanoaod_v6:
+            print('    MiniAODv1 NanoAODv6: %s (%s)' % (miniaod_v1_nanoaod_v6['dataset'], miniaod_v1_nanoaod_v6['type']))
+
+        if miniaod_v1_nanoaod_v8:
+            print('    MiniAODv1 NanoAODv8: %s (%s)' % (miniaod_v1_nanoaod_v8['dataset'], miniaod_v1_nanoaod_v8['type']))
 
         if miniaod_v2:
             print('  MiniAODv2: %s (%s)' % (miniaod_v2['dataset'], miniaod_v2['type']))
 
-        if miniaod_v2_nanoaod:
-            print('    MiniAODv2 NanoAOD: %s (%s)' % (miniaod_v2_nanoaod['dataset'], miniaod_v2_nanoaod['type']))
+        if miniaod_v2_nanoaod_v9:
+            print('    MiniAODv2 NanoAOD: %s (%s)' % (miniaod_v2_nanoaod_v9['dataset'], miniaod_v2_nanoaod_v9['type']))
 
         twiki_runs = set(item['twiki_runs'])
 
@@ -123,7 +129,12 @@ for item in items:
                   'whitelist_x_dcs_events': whitelist_x_dcs_events}
 
 
-        for prefix, thing in {'aod': aod, 'miniaod_v1': miniaod_v1, 'miniaod_v1_nanoaod': miniaod_v1_nanoaod, 'miniaod_v2': miniaod_v2, 'miniaod_v2_nanoaod': miniaod_v2_nanoaod}.items():
+        for prefix, thing in {'aod': aod,
+                              'miniaod_v1': miniaod_v1,
+                              'miniaod_v1_nanoaod_v6': miniaod_v1_nanoaod_v6,
+                              'miniaod_v1_nanoaod_v8': miniaod_v1_nanoaod_v8,
+                              'miniaod_v2': miniaod_v2,
+                              'miniaod_v2_nanoaod_v9': miniaod_v2_nanoaod_v9}.items():
             dataset = thing.get('dataset')
             result[prefix + '_dataset'] = dataset
             result[prefix + '_dataset_status'] = thing.get('type')

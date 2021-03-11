@@ -27,6 +27,26 @@ def process_item(item):
         process_item(output_item)
 
 
+def calculate_fractions(item, raw, aod):
+    if 'aod_whitelist_raw_events' in item:
+        aod = item
+        aod['whitelist_x_raw_and_dcs_x_raw_surplus_runs'] = len(set(aod['aod_whitelist_raw_runs']) - set(raw['raw_x_dcs_runs']))
+        aod['whitelist_x_raw_and_dcs_x_raw_missing_runs'] = len(set(raw['raw_x_dcs_runs']) - set(aod['aod_whitelist_raw_runs']))
+        aod['whitelist_x_raw_and_dcs_x_raw_events_diff'] = aod['aod_whitelist_raw_events'] - raw['raw_x_dcs_events']
+        aod['whitelist_x_raw_and_whitelist_dcs_x_raw_surplus_runs'] = len(set(aod['aod_whitelist_x_dcs_raw_runs']) - set(raw['raw_x_dcs_runs']))
+        aod['whitelist_x_raw_and_whitelist_dcs_x_raw_missing_runs'] = len(set(raw['raw_x_dcs_runs']) - set(aod['aod_whitelist_x_dcs_raw_runs']))
+        aod['whitelist_x_raw_and_whitelist_dcs_x_raw_events_diff'] = aod['aod_whitelist_x_dcs_raw_events'] - raw['raw_x_dcs_events']
+
+    if aod:
+        item['fraction'] = item['events'] / aod['aod_whitelist_x_dcs_raw_events'] if aod['aod_whitelist_x_dcs_raw_events'] else None
+        item['missing_runs'] = len(set(aod['aod_whitelist_x_dcs_raw_runs']) - set(item['runs']))
+        item['surplus_runs'] = len(set(item['runs']) - set(aod['aod_whitelist_x_dcs_raw_runs']))
+        item['events_difference'] = item['events'] - aod['aod_whitelist_x_dcs_raw_events']
+
+    for output_item in item.get('output', []):
+        calculate_fractions(output_item, raw, aod)
+
+
 with open('data.json', 'r') as data_file:
     items = json.load(data_file)
 
@@ -34,6 +54,7 @@ print('Read %s items from data.json' % (len(items)))
 
 results = []
 for item in items:
+    calculate_fractions(item, item, None)
     # Show only lengths of run lists
     process_item(item)
     # Rows of table

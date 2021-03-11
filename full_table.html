@@ -40,7 +40,7 @@
         background: #c8c8c8;
       }
       .orange-cell {
-        background: #fae3d2;
+        background: #ffb732;
       }
       .green-cell {
         background: #bae0ce;
@@ -82,6 +82,8 @@
             Whitelist x DCS Runs
             <br>
             <small>Whitelist x DCS x RAW events</small>
+            <br>
+            <i>EXPECTED</i>
           </th>
           <th colspan="3">
             AOD
@@ -95,38 +97,38 @@
         </tr>
         <tr>
           <th>
+            <small>PrepID</small>
+            <br>
             <span class="sort" @click="changeSortToColumn('aod_dataset')">Dataset</span>
             <br>
-            <small>PrepID</small>
+            <small>Runs | events | processing string</small>
           </th>
           <th>
             <span class="sort" @click="changeSortToColumn('aod_fraction')">Fraction</span>
-            <br>
-            <small>Produced events</small>
           </th>
-          <th>Diff RAWxDCS</th>
+          <th>Diff Whitelist x DCS</th>
           <th>
+            <small>PrepID</small>
+            <br>
             <span class="sort" @click="changeSortToColumn('miniaod_dataset')">Dataset</span>
             <br>
-            <small>PrepID</small>
+            <small>Runs | events | processing string</small>
           </th>
           <th>
             <span class="sort" @click="changeSortToColumn('miniaod_fraction')">Fraction</span>
-            <br>
-            <small>Produced events</small>
           </th>
-          <th>Diff RAWxDCS</th>
+          <th>Diff Whitelist x DCS</th>
           <th>
+            <small>PrepID</small>
+            <br>
             <span class="sort" @click="changeSortToColumn('nanoaod_dataset')">Dataset</span>
             <br>
-            <small>PrepID</small>
+            <small>Runs | events | processing string</small>
           </th>
           <th>
             <span class="sort" @click="changeSortToColumn('nanoaod_fraction')">Fraction</span>
-            <br>
-            <small>Produced events</small>
           </th>
-          <th>Diff RAWxDCS</th>
+          <th>Diff Whitelist x DCS</th>
         </tr>
         <tr v-for="row in rows">
           <template v-for="item in row">
@@ -135,7 +137,7 @@
                 {{item.year}}
               </td>
               <td :rowspan="item.rowspan">
-                <a :href="makeDASLink(item.dataset)">{{item.dataset}}</a>
+                <a target="_blank" :href="makeDASLink(item.dataset)">{{item.dataset}}</a>
                 <br>
                 <small>{{item.runs}}&nbsp;runs | {{item.events}}&nbsp;events</small>
               </td>
@@ -147,20 +149,52 @@
               <template v-if="item.aod_whitelist_raw_runs != undefined">
                 <td :rowspan="item.rowspan">
                   {{item.aod_whitelist_raw_runs}} runs<br><small>{{item.aod_whitelist_raw_events}} events</small>
+                  <template v-if="item.whitelist_x_raw_and_dcs_x_raw_surplus_runs">
+                    <br>
+                    <small style="color: green">+{{item.whitelist_x_raw_and_dcs_x_raw_surplus_runs}} runs</small>
+                  </template>
+                  <template v-if="item.whitelist_x_raw_and_dcs_x_raw_missing_runs">
+                    <br>
+                    <small style="color: red">-{{item.whitelist_x_raw_and_dcs_x_raw_missing_runs}} runs</small>
+                  </template>
+                  <template v-if="item.whitelist_x_raw_and_dcs_x_raw_events_diff > 0">
+                    <br>
+                    <small style="color: green">+{{item.whitelist_x_raw_and_dcs_x_raw_events_diff}} events</small>
+                  </template>
+                  <template v-if="item.whitelist_x_raw_and_dcs_x_raw_events_diff < 0">
+                    <br>
+                    <small style="color: red">{{item.whitelist_x_raw_and_dcs_x_raw_events_diff}} events</small>
+                  </template>
                 </td>
                 <td :rowspan="item.rowspan">
                   {{item.aod_whitelist_x_dcs_raw_runs}} runs<br><small>{{item.aod_whitelist_x_dcs_raw_events}} events</small>
+                  <template v-if="item.whitelist_x_raw_and_whitelist_dcs_x_raw_surplus_runs">
+                    <br>
+                    <small style="color: green">+{{item.whitelist_x_raw_and_whitelist_dcs_x_raw_surplus_runs}} runs</small>
+                  </template>
+                  <template v-if="item.whitelist_x_raw_and_whitelist_dcs_x_raw_missing_runs">
+                    <br>
+                    <small style="color: red">-{{item.whitelist_x_raw_and_whitelist_dcs_x_raw_missing_runs}} runs</small>
+                  </template>
+                  <template v-if="item.whitelist_x_raw_and_whitelist_dcs_x_raw_events_diff > 0">
+                    <br>
+                    <small style="color: green">+{{item.whitelist_x_raw_and_whitelist_dcs_x_raw_events_diff}} events</small>
+                  </template>
+                  <template v-if="item.whitelist_x_raw_and_whitelist_dcs_x_raw_events_diff < 0">
+                    <br>
+                    <small style="color: red">{{item.whitelist_x_raw_and_whitelist_dcs_x_raw_events_diff}} events</small>
+                  </template>
                 </td>
               </template>
               <td :rowspan="item.rowspan" :class="cellColor(item)">
-                <a :href="makeDASLink(item.dataset)">{{item.dataset}}</a>
+                <small><a target="_blank" :href="makeStatsLink(item.prepid)">{{item.prepid}}</a></small>
                 <br>
-                <small>{{item.prepid}}</small>
+                <a target="_blank" :href="makeDASLink(item.dataset)">{{item.dataset}}</a>
+                <br>
+                <small>{{item.runs}}&nbsp;runs | {{item.events}}&nbsp;events | {{item.processing_string}}</small>
               </td>
               <td :rowspan="item.rowspan" :class="cellColor(item)">
                 {{item.fraction}}
-                <br>
-                <small>{{item.events}}&nbsp;events</small>
               </td>
               <td :rowspan="item.rowspan" :class="cellColor(item)">
                 <template v-if="item.missing_runs">
@@ -330,6 +364,9 @@
           makeDASLink(dataset) {
             return 'https://cmsweb.cern.ch/das/request?view=list&limit=50&instance=prod%2Fglobal&input=dataset%3D' + dataset;
           },
+          makeStatsLink(prepid) {
+            return 'https://cms-pdmv.cern.ch/stats?prepid=' + prepid;
+          },
           cellColor(item) {
             if (item.type == 'PRODUCTION') {
               return 'orange-cell';
@@ -340,7 +377,7 @@
             if (item.fraction < 1 && item.fraction >= 0.999) {
               return 'light-green-cell';
             }
-            return '';
+            return 'light-red-cell';
           },
         }
       })
