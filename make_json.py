@@ -144,7 +144,7 @@ datasets = sorted(datasets)
 
 
 years = {'2016': {'twiki_file_name': '2016ULdataFromTwiki.txt',
-                  'aod_tag': ['21Feb2020_UL2016', '21Feb2020_ver1_UL2016_HIPM', '21Feb2020_ver2_UL2016_HIPM'],
+                  'aod_tag': ['21Feb2020_UL2016', '21Feb2020_ver1_UL2016_HIPM', '21Feb2020_ver2_UL2016_HIPM', '21Feb2020_UL2016_HIPM_rsb'],
                   'dcs_json_path': '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/DCSOnly/json_DCSONLY.txt'},
          '2017': {'twiki_file_name': '2017ULdataFromTwiki.txt',
                   'aod_tag': ['09Aug2019_UL2017'],

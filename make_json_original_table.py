@@ -20,11 +20,11 @@ def pick_output_item(items, tags):
     return {}
 
 
-default_aod_tags = {'2016': [['21Feb2020_UL2016', '21Feb2020_UL2016_HIPM']],
+default_aod_tags = {'2016': [['21Feb2020_UL2016', '21Feb2020_UL2016_HIPM', '21Feb2020_UL2016_HIPM_rsb']],
                     '2017': [['09Aug2019_UL2017_rsb', '09Aug2019_UL2017']],
                     '2018': [['12Nov2019_UL2018_rsb_v3', '12Nov2019_UL2018_rsb_v2', '12Nov2019_UL2018_rsb', '12Nov2019_UL2018']]}
 
-default_miniaod_v1_tags = {'2016': ['21Feb2020_UL2016', '21Feb2020_UL2016_HIPM'],
+default_miniaod_v1_tags = {'2016': ['21Feb2020_UL2016', '21Feb2020_UL2016_HIPM', '21Feb2020_UL2016_HIPM_rsb'],
                            '2017': ['09Aug2019_UL2017_rsb', '09Aug2019_UL2017'],
                            '2018': ['12Nov2019_UL2018_rsb_v3', '12Nov2019_UL2018_rsb_v2', '12Nov2019_UL2018_rsb', '12Nov2019_UL2018']}
 
@@ -48,6 +48,15 @@ with open('data.json', 'r') as data_file:
     items = json.load(data_file)
 
 print('Read %s items from data.json' % (len(items)))
+
+exception_2016F_HIPM_runs = set([277932, 277934, 277981, 277991, 277992, 278017,
+                                 278018, 278167, 278175, 278193, 278239, 278240,
+                                 278273, 278274, 278288, 278289, 278290, 278308,
+                                 278309, 278310, 278315, 278345, 278346, 278349,
+                                 278366, 278406, 278509, 278761, 278770, 278806,
+                                 278807])
+exception_2016F_nonHIPM_runs = set([278769, 278801, 278802, 278803,
+                                    278804, 278805, 278808])
 
 results = []
 for item in items:
@@ -97,6 +106,12 @@ for item in items:
 
         raw_x_dcs_runs = set(item['raw_x_dcs_runs'])
         raw_x_dcs_events = item['raw_x_dcs_events']
+
+        if '2016F' in raw_dataset:
+            if 'HIPM' in aod_tag_bunch[0]:
+                raw_x_dcs_runs -= exception_2016F_nonHIPM_runs
+            else:
+                raw_x_dcs_runs -= exception_2016F_HIPM_runs
 
         raw_runs = set(item['runs'])
         raw_events = item['events']
