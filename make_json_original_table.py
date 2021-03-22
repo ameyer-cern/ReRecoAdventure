@@ -125,9 +125,6 @@ for item in items:
                   'year': item['year'],
                   'primary_dataset': raw_dataset.split('/')[1],
                   'twiki_runs': len(twiki_runs),
-                  #   'raw_x_dcs_twiki_missing_runs': len(raw_x_dcs_runs - twiki_runs),
-                  #   'raw_x_dcs_twiki_surplus_runs': len(twiki_runs - raw_x_dcs_runs),
-                  #   'raw_x_dcs_twiki_runs_diff': len(raw_x_dcs_runs - twiki_runs) + len(twiki_runs - raw_x_dcs_runs),
                   'whitelist_x_dcs_twiki_missing_runs': len(whitelist_x_dcs_runs - twiki_runs),
                   'whitelist_x_dcs_twiki_surplus_runs': len(twiki_runs - whitelist_x_dcs_runs),
                   'whitelist_x_dcs_twiki_runs_diff': len(whitelist_x_dcs_runs - twiki_runs) + len(twiki_runs - whitelist_x_dcs_runs),
@@ -144,12 +141,12 @@ for item in items:
                   'whitelist_x_dcs_events': whitelist_x_dcs_events}
 
 
-        for prefix, thing in {'aod': aod,
-                              'miniaod_v1': miniaod_v1,
-                              'miniaod_v1_nanoaod_v6': miniaod_v1_nanoaod_v6,
-                              'miniaod_v1_nanoaod_v8': miniaod_v1_nanoaod_v8,
-                              'miniaod_v2': miniaod_v2,
-                              'miniaod_v2_nanoaod_v9': miniaod_v2_nanoaod_v9}.items():
+        for prefix, (thing, parent) in {'aod': (aod, None),
+                              'miniaod_v1': (miniaod_v1, aod),
+                              'miniaod_v1_nanoaod_v6': (miniaod_v1_nanoaod_v6, miniaod_v1),
+                              'miniaod_v1_nanoaod_v8': (miniaod_v1_nanoaod_v8, miniaod_v1),
+                              'miniaod_v2': (miniaod_v2, aod),
+                              'miniaod_v2_nanoaod_v9': (miniaod_v2_nanoaod_v9, miniaod_v2)}.items():
             dataset = thing.get('dataset')
             result[prefix + '_dataset'] = dataset
             result[prefix + '_dataset_status'] = thing.get('type')
@@ -158,24 +155,21 @@ for item in items:
             events = thing.get('events', 0)
             result[prefix + '_runs'] = len(runs)
             result[prefix + '_events'] = events
-            if dataset:
-                # result[prefix + '_raw_x_dcs_missing_runs'] = len(raw_x_dcs_runs - runs)
-                # result[prefix + '_raw_x_dcs_surplus_runs'] = len(runs - raw_x_dcs_runs)
-                # result[prefix + '_raw_x_dcs_runs_diff'] = result[prefix + '_raw_x_dcs_missing_runs'] + result[prefix + '_raw_x_dcs_surplus_runs']
-                # result[prefix + '_raw_x_dcs_ratio'] = float(events) / raw_x_dcs_events if raw_x_dcs_events else None
-                result[prefix + '_whitelist_x_dcs_missing_runs'] = len(whitelist_x_dcs_runs - runs)
-                result[prefix + '_whitelist_x_dcs_surplus_runs'] = len(runs - whitelist_x_dcs_runs)
-                result[prefix + '_whitelist_x_dcs_runs_diff'] = result[prefix + '_whitelist_x_dcs_missing_runs'] + result[prefix + '_whitelist_x_dcs_surplus_runs']
-                result[prefix + '_whitelist_x_dcs_ratio'] = float(events) / whitelist_x_dcs_events if whitelist_x_dcs_events else None
-            else:
-                # result[prefix + '_raw_x_dcs_missing_runs'] = None
-                # result[prefix + '_raw_x_dcs_surplus_runs'] = None
-                # result[prefix + '_raw_x_dcs_runs_diff'] = None
-                # result[prefix + '_raw_x_dcs_ratio'] = None
-                result[prefix + '_whitelist_x_dcs_missing_runs'] = None
-                result[prefix + '_whitelist_x_dcs_surplus_runs'] = None
-                result[prefix + '_whitelist_x_dcs_runs_diff'] = None
-                result[prefix + '_whitelist_x_dcs_ratio'] = None
+            result[prefix + '_produced_vs_parent_ratio'] = None
+            result[prefix + '_vs_parent_missing_runs'] = None
+            result[prefix + '_vs_parent_surplus_runs'] = None
+            result[prefix + '_vs_parent_runs_diff'] = None
+            if parent:
+                result[prefix + '_produced_vs_parent_ratio'] = float(events) / parent['events'] if parent and parent['events'] else None
+                result[prefix + '_vs_parent_missing_runs'] = len(set(parent.get('runs', [])) - runs)
+                result[prefix + '_vs_parent_surplus_runs'] = len(runs - set(parent.get('runs', [])))
+                result[prefix + '_vs_parent_runs_diff'] = result[prefix + '_vs_parent_missing_runs'] + result[prefix + '_vs_parent_surplus_runs']
+            elif dataset:
+                result[prefix + '_produced_vs_parent_ratio'] = float(events) / whitelist_x_dcs_events if whitelist_x_dcs_events else None
+                result[prefix + '_vs_parent_missing_runs'] = len(whitelist_x_dcs_runs - runs)
+                result[prefix + '_vs_parent_surplus_runs'] = len(runs - whitelist_x_dcs_runs)
+                result[prefix + '_vs_parent_runs_diff'] = result[prefix + '_vs_parent_missing_runs'] + result[prefix + '_vs_parent_surplus_runs']
+
 
         results.append(result)
 
