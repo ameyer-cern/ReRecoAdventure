@@ -18,7 +18,6 @@
 /DoubleMuonLowMass/Run2018B-v1/RAW
 /DoubleMuonLowMass/Run2018C-v1/RAW
 /DoubleMuonLowMass/Run2018D-v1/RAW
-/DoubleMuonLowPU/Run2018C-v1/RAW
 /EGamma/Run2018A-v1/RAW
 /EGamma/Run2018B-v1/RAW
 /EGamma/Run2018C-v1/RAW
@@ -47,10 +46,6 @@
 /Tau/Run2018B-v1/RAW
 /Tau/Run2018C-v1/RAW
 /Tau/Run2018D-v1/RAW
-/FSQJet1/Run2018B-v1/RAW
-/FSQJet1/Run2018C-v1/RAW
-/FSQJet2/Run2018B-v1/RAW
-/FSQJet2/Run2018C-v1/RAW
 /MinimumBias/Run2018A-v1/RAW
 /MinimumBias/Run2018B-v1/RAW
 /MinimumBias/Run2018C-v1/RAW
