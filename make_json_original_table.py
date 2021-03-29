@@ -58,6 +58,14 @@ exception_2016F_HIPM_runs = set([277932, 277934, 277981, 277991, 277992, 278017,
 exception_2016F_nonHIPM_runs = set([278769, 278801, 278802, 278803,
                                     278804, 278805, 278808])
 
+exception_2016F_twiki = {'/JetHT/Run2016F-v1/RAW': [278769, 278801, 278802, 278803, 278804, 278805, 278808],
+                         '/SingleElectron/Run2016F-v1/RAW': [278769, 278801, 278802, 278803, 278804, 278805, 278808],
+                         '/DoubleEG/Run2016F-v1/RAW': [278769, 278801, 278802, 278803, 278804, 278805, 278808],
+                         '/MET/Run2016F-v1/RAW': [278769, 278801, 278802, 278803, 278804, 278805, 278808],
+                         '/SingleMuon/Run2016F-v1/RAW': [278769, 278801, 278802, 278803, 278804, 278805, 278808],
+                         '/ZeroBias/Run2016F-v1/RAW': [278769, 278801, 278802, 278803, 278804, 278805, 278808],
+                         '/DoubleMuon/Run2016F-v1/RAW': [278769, 278801, 278802, 278803, 278804, 278805, 278808]}
+
 results = []
 for item in items:
     raw_dataset = item['dataset']
@@ -109,9 +117,12 @@ for item in items:
 
         if '2016F' in raw_dataset:
             if 'HIPM' in aod_tag_bunch[0]:
+                # HIPM
                 raw_x_dcs_runs -= exception_2016F_nonHIPM_runs
             else:
+                # non-HIPM
                 raw_x_dcs_runs -= exception_2016F_HIPM_runs
+                twiki_runs = set(exception_2016F_twiki.get(raw_dataset, []))
 
         raw_runs = set(item['runs'])
         raw_events = item['events']

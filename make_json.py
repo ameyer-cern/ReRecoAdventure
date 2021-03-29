@@ -69,7 +69,8 @@ def get_twiki_file(file_name):
     with open(file_name) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter='\t')
         for row in csv_reader:
-            rows.append(row)
+            if row and not row[0].startswith('#'):
+               rows.append(row)
     return rows
 
 
@@ -141,7 +142,6 @@ if '--debug' in sys.argv:
     print('Picking random 10 datasets because debug')
 
 datasets = sorted(datasets)
-
 
 years = {'2016': {'twiki_file_name': '2016ULdataFromTwiki.txt',
                   'aod_tag': ['21Feb2020_UL2016', '21Feb2020_ver1_UL2016_HIPM', '21Feb2020_ver2_UL2016_HIPM', '21Feb2020_UL2016_HIPM_rsb'],
