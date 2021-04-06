@@ -176,21 +176,33 @@
           </th>
           <th v-if="columns.aod" :colspan="columns.diff_produced_vs_parent && columns.produced_expected ? 3 : columns.diff_produced_vs_parent || columns.produced_expected ? 2 : 1">
             AOD
+            <br>
+            <input type="text" class="header-search" placeholder="Type to search..." v-model="search.aod_dataset" @input="applyFilters()">
           </th>
           <th v-if="columns.miniaod_v1" :colspan="columns.diff_produced_vs_parent && columns.produced_expected ? 3 : columns.diff_produced_vs_parent || columns.produced_expected ? 2 : 1">
             MiniAODv1
+            <br>
+            <input type="text" class="header-search" placeholder="Type to search..." v-model="search.miniaod_v1_dataset" @input="applyFilters()">
           </th>
           <th v-if="columns.miniaod_v1_nanoaod_v6" :colspan="columns.diff_produced_vs_parent && columns.produced_expected ? 3 : columns.diff_produced_vs_parent || columns.produced_expected ? 2 : 1">
             MiniAODv1 NanoAODv6
+            <br>
+            <input type="text" class="header-search" placeholder="Type to search..." v-model="search.miniaod_v1_nanoaod_v6_dataset" @input="applyFilters()">
           </th>
           <th v-if="columns.miniaod_v1_nanoaod_v8" :colspan="columns.diff_produced_vs_parent && columns.produced_expected ? 3 : columns.diff_produced_vs_parent || columns.produced_expected ? 2 : 1">
             MiniAODv1 NanoAODv8
+            <br>
+            <input type="text" class="header-search" placeholder="Type to search..." v-model="search.miniaod_v1_nanoaod_v8_dataset" @input="applyFilters()">
           </th>
           <th v-if="columns.miniaod_v2" :colspan="columns.diff_produced_vs_parent && columns.produced_expected ? 3 : columns.diff_produced_vs_parent || columns.produced_expected ? 2 : 1">
             MiniAODv2
+            <br>
+            <input type="text" class="header-search" placeholder="Type to search..." v-model="search.miniaod_v2_dataset" @input="applyFilters()">
           </th>
           <th v-if="columns.miniaod_v2_nanoaod_v9" :colspan="columns.diff_produced_vs_parent && columns.produced_expected ? 3 : columns.diff_produced_vs_parent || columns.produced_expected ? 2 : 1">
             MiniAODv2 NanoAODv9
+            <br>
+            <input type="text" class="header-search" placeholder="Type to search..." v-model="search.miniaod_v2_nanoaod_v9_dataset" @input="applyFilters()">
           </th>
         </tr>
         <tr>
@@ -528,6 +540,12 @@
           prefixes: ['aod', 'miniaod_v1', 'miniaod_v1_nanoaod_v6', 'miniaod_v1_nanoaod_v8', 'miniaod_v2', 'miniaod_v2_nanoaod_v9'],
           search: {
             input_dataset: undefined,
+            aod_dataset: undefined,
+            miniaod_v1_dataset: undefined,
+            miniaod_v2_dataset: undefined,
+            miniaod_v1_nanoaod_v6_dataset: undefined,
+            miniaod_v1_nanoaod_v8_dataset: undefined,
+            miniaod_v2_nanoaod_v9_dataset: undefined,
           },
           columns: {
             primary_dataset: true,
@@ -549,6 +567,13 @@
         created (){
           let urlParams = Object.fromEntries(new URLSearchParams(window.location.search));
           this.search.input_dataset = urlParams.input_dataset;
+          this.search.aod_dataset = urlParams.input_dataset;
+          this.search.miniaod_v1_dataset = urlParams.miniaod_v1_dataset;
+          this.search.miniaod_v2_dataset = urlParams.miniaod_v2_dataset;
+          this.search.miniaod_v1_nanoaod_v6_dataset = urlParams.miniaod_v1_nanoaod_v6_dataset;
+          this.search.miniaod_v1_nanoaod_v8_dataset = urlParams.miniaod_v1_nanoaod_v8_dataset;
+          this.search.miniaod_v2_nanoaod_v9_dataset = urlParams.miniaod_v2_nanoaod_v9_dataset;
+
           this.sortOn = urlParams.sort_on || 'year';
           this.sortOrder = parseInt(urlParams.sort_order || 1);
 
