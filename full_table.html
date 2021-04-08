@@ -36,6 +36,10 @@
       input {
         width: 98%;
         margin: auto;
+        margin-bottom: 2px;
+      }
+      input[type=checkbox] {
+        width: unset;
       }
       .sorted-by {
         background: #c8c8c8;
@@ -59,6 +63,27 @@
   </head>
   <body>
     <div id="app">
+      <div style="text-align: center; margin: 8px;">
+        Campaigns:
+        <template v-for="(_, campaign) in campaigns">
+          <input
+            type="checkbox"
+            :checked="campaigns[campaign]"
+            @input="campaigns[campaign] = $event.target.checked; applyFilters()"
+          /> {{campaign}}
+        </template>
+        <br>
+        Columns:
+        <template v-for="(_, column) in columns">
+          <input
+            type="checkbox"
+            :checked="columns[column]"
+            @input="columns[column] = $event.target.checked; applyFilters()"
+          /> {{column}}
+        </template>
+        <br>
+        Updated: {{lastUpdate}}
+      </div>
       <table>
         <tr>
           <th rowspan="2">
@@ -69,70 +94,70 @@
             <br>
             <input type="text" class="header-search" placeholder="Type to search..." v-model="search.dataset" @input="applyFilters()">
           </th>
-          <th rowspan="2">
+          <th rowspan="2" v-if="columns.raw_x_dcs_runs">
             RAW x DCS Runs
             <br>
             <small>RAW x DCS Events</small>
+            <br>
+            <i>Expected</i>
           </th>
-          <th rowspan="2">
+          <th rowspan="2" v-if="columns.whitelist_runs">
             Whitelist Runs
             <br>
-            <small>Whitelist x RAW events</small>
+            <small>Whitelist events</small>
           </th>
-          <th rowspan="2">
+          <th rowspan="2" v-if="columns.whitelist_x_dcs_runs">
             Whitelist x DCS Runs
             <br>
-            <small>Whitelist x DCS x RAW events</small>
-            <br>
-            <i>EXPECTED</i>
+            <small>Whitelist x DCS events</small>
           </th>
-          <th colspan="3">
+          <th :colspan="columns.fraction && columns.diff_to_parent ? 3 : columns.fraction || columns.diff_to_parent ? 2 : 1" v-if="columns.aod">
             AOD
           </th>
-          <th colspan="3">
+          <th :colspan="columns.fraction && columns.diff_to_parent ? 3 : columns.fraction || columns.diff_to_parent ? 2 : 1" v-if="columns.miniaod">
             MiniAOD
           </th>
-          <th colspan="3">
+          <th :colspan="columns.fraction && columns.diff_to_parent ? 3 : columns.fraction || columns.diff_to_parent ? 2 : 1" v-if="columns.nanoaod">
             NanoAOD
           </th>
         </tr>
         <tr>
-          <th>
+          <th v-if="columns.aod">
             <small>PrepID</small>
             <br>
             <span class="sort" @click="changeSortToColumn('aod_dataset')">Dataset</span>
             <br>
-            <small>Runs | events | processing string</small>
+            <small>Runs | events | processing string | campaign</small>
           </th>
-          <th>
+          <th v-if="columns.aod && columns.fraction">
             <span class="sort" @click="changeSortToColumn('aod_fraction')">Fraction</span>
           </th>
-          <th>Diff Whitelist x DCS</th>
-          <th>
+          <th v-if="columns.aod && columns.diff_to_parent">Diff to RAW x DCS</th>
+          <th v-if="columns.miniaod">
             <small>PrepID</small>
             <br>
             <span class="sort" @click="changeSortToColumn('miniaod_dataset')">Dataset</span>
             <br>
-            <small>Runs | events | processing string</small>
+            <small>Runs | events | processing string | campaign</small>
           </th>
-          <th>
+          <th v-if="columns.miniaod && columns.fraction">
             <span class="sort" @click="changeSortToColumn('miniaod_fraction')">Fraction</span>
           </th>
-          <th>Diff Whitelist x DCS</th>
-          <th>
+          <th v-if="columns.miniaod && columns.diff_to_parent">Diff to parent</th>
+          <th v-if="columns.nanoaod">
             <small>PrepID</small>
             <br>
             <span class="sort" @click="changeSortToColumn('nanoaod_dataset')">Dataset</span>
             <br>
-            <small>Runs | events | processing string</small>
+            <small>Runs | events | processing string | campaign</small>
           </th>
-          <th>
+          <th v-if="columns.nanoaod && columns.fraction">
             <span class="sort" @click="changeSortToColumn('nanoaod_fraction')">Fraction</span>
           </th>
-          <th>Diff Whitelist x DCS</th>
+          <th v-if="columns.nanoaod && columns.diff_to_parent">Diff to parent</th>
         </tr>
         <tr v-for="row in rows">
-          <template v-for="item in row">
+          <template v-for="(item, index) in row">
             <template v-if="item.year && item.rowspan">
               <td :rowspan="item.rowspan">
                 {{item.year}}
@@ -142,62 +167,62 @@
                 <br>
                 <small>{{item.runs}}&nbsp;runs | {{item.events}}&nbsp;events</small>
               </td>
-              <td :rowspan="item.rowspan">
-                {{item.raw_x_dcs_runs}} runs<br><small>{{item.raw_x_dcs_events}} events</small>
-              </td>
             </template>
             <template v-if="!item.year && item.rowspan">
-              <template v-if="item.aod_whitelist_raw_runs != undefined">
-                <td :rowspan="item.rowspan">
-                  {{item.aod_whitelist_raw_runs}} runs<br><small>{{item.aod_whitelist_raw_events}} events</small>
-                  <template v-if="item.whitelist_x_raw_and_dcs_x_raw_surplus_runs">
+              <template v-if="item.whitelist_runs != undefined">
+                <td :rowspan="item.rowspan" v-if="columns.raw_x_dcs_runs">
+                  {{item.raw_x_dcs_runs}} runs<br><small>{{item.raw_x_dcs_events}} events</small>
+                </td>
+                <td :rowspan="item.rowspan" v-if="columns.whitelist_runs">
+                  {{item.whitelist_runs}} runs<br><small>{{item.whitelist_events}} events</small>
+                  <template v-if="item.whitelist_and_raw_x_dcs_surplus_runs">
                     <br>
-                    <small style="color: green">+{{item.whitelist_x_raw_and_dcs_x_raw_surplus_runs}} runs</small>
+                    <small style="color: green">+{{item.whitelist_and_raw_x_dcs_surplus_runs}} runs</small>
                   </template>
-                  <template v-if="item.whitelist_x_raw_and_dcs_x_raw_missing_runs">
+                  <template v-if="item.whitelist_and_raw_x_dcs_missing_runs">
                     <br>
-                    <small style="color: red">-{{item.whitelist_x_raw_and_dcs_x_raw_missing_runs}} runs</small>
+                    <small style="color: red">-{{item.whitelist_and_raw_x_dcs_missing_runs}} runs</small>
                   </template>
-                  <template v-if="item.whitelist_x_raw_and_dcs_x_raw_events_diff > 0">
+                  <template v-if="item.whitelist_and_raw_x_dcs_events_diff > 0">
                     <br>
-                    <small style="color: green">+{{item.whitelist_x_raw_and_dcs_x_raw_events_diff}} events</small>
+                    <small style="color: green">+{{item.whitelist_and_raw_x_dcs_events_diff}} events</small>
                   </template>
-                  <template v-if="item.whitelist_x_raw_and_dcs_x_raw_events_diff < 0">
+                  <template v-if="item.whitelist_and_raw_x_dcs_events_diff < 0">
                     <br>
-                    <small style="color: red">{{item.whitelist_x_raw_and_dcs_x_raw_events_diff}} events</small>
+                    <small style="color: red">{{item.whitelist_and_raw_x_dcs_events_diff}} events</small>
                   </template>
                 </td>
-                <td :rowspan="item.rowspan">
-                  {{item.aod_whitelist_x_dcs_raw_runs}} runs<br><small>{{item.aod_whitelist_x_dcs_raw_events}} events</small>
-                  <template v-if="item.whitelist_x_raw_and_whitelist_dcs_x_raw_surplus_runs">
+                <td :rowspan="item.rowspan" v-if="columns.whitelist_x_dcs_runs">
+                  {{item.whitelist_x_dcs_runs}} runs<br><small>{{item.whitelist_x_dcs_events}} events</small>
+                  <template v-if="item.whitelist_x_dcs_and_raw_x_dcs_surplus_runs">
                     <br>
-                    <small style="color: green">+{{item.whitelist_x_raw_and_whitelist_dcs_x_raw_surplus_runs}} runs</small>
+                    <small style="color: green">+{{item.whitelist_x_dcs_and_raw_x_dcs_surplus_runs}} runs</small>
                   </template>
-                  <template v-if="item.whitelist_x_raw_and_whitelist_dcs_x_raw_missing_runs">
+                  <template v-if="item.whitelist_x_dcs_and_raw_x_dcs_missing_runs">
                     <br>
-                    <small style="color: red">-{{item.whitelist_x_raw_and_whitelist_dcs_x_raw_missing_runs}} runs</small>
+                    <small style="color: red">-{{item.whitelist_x_dcs_and_raw_x_dcs_missing_runs}} runs</small>
                   </template>
-                  <template v-if="item.whitelist_x_raw_and_whitelist_dcs_x_raw_events_diff > 0">
+                  <template v-if="item.whitelist_x_dcs_and_raw_x_dcs_events_diff > 0">
                     <br>
-                    <small style="color: green">+{{item.whitelist_x_raw_and_whitelist_dcs_x_raw_events_diff}} events</small>
+                    <small style="color: green">+{{item.whitelist_x_dcs_and_raw_x_dcs_events_diff}} events</small>
                   </template>
-                  <template v-if="item.whitelist_x_raw_and_whitelist_dcs_x_raw_events_diff < 0">
+                  <template v-if="item.whitelist_x_dcs_and_raw_x_dcs_events_diff < 0">
                     <br>
-                    <small style="color: red">{{item.whitelist_x_raw_and_whitelist_dcs_x_raw_events_diff}} events</small>
+                    <small style="color: red">{{item.whitelist_x_dcs_and_raw_x_dcs_events_diff}} events</small>
                   </template>
                 </td>
               </template>
-              <td :rowspan="item.rowspan" :class="cellColor(item)">
+              <td :rowspan="item.rowspan" :class="cellColor(item)" v-if="index == 1 && columns.aod || index == 2 && columns.miniaod || index == 3 && columns.nanoaod">
                 <small><a target="_blank" :href="makeStatsLink(item.prepid)">{{item.prepid}}</a></small>
                 <br>
                 <a target="_blank" :href="makeDASLink(item.dataset)">{{item.dataset}}</a>
                 <br>
-                <small>{{item.runs}}&nbsp;runs | {{item.events}}&nbsp;events | {{item.processing_string}}</small>
+                <small>{{item.runs}}&nbsp;runs | {{item.events}}&nbsp;events | {{item.processing_string}} | {{item.campaign}}</small>
               </td>
-              <td :rowspan="item.rowspan" :class="cellColor(item)">
+              <td :rowspan="item.rowspan" :class="cellColor(item)" v-if="columns.fraction && (index == 1 && columns.aod || index == 2 && columns.miniaod || index == 3 && columns.nanoaod)">
                 {{item.fraction}}
               </td>
-              <td :rowspan="item.rowspan" :class="cellColor(item)">
+              <td :rowspan="item.rowspan" :class="cellColor(item)" v-if="columns.diff_to_parent && (index == 1 && columns.aod || index == 2 && columns.miniaod || index == 3 && columns.nanoaod)">
                 <template v-if="item.missing_runs">
                   -{{item.missing_runs}} runs<br>
                 </template>
@@ -226,9 +251,21 @@
           sortOn: 'year',
           sortOrder: 1,
           prefixes: ['aod', 'miniaod_v1', 'miniaod_v1_nanoaod', 'miniaod_v2', 'miniaod_v2_nanoaod'],
+          campaigns: {},
+          columns: {
+            raw_x_dcs_runs: true,
+            whitelist_runs: true,
+            whitelist_x_dcs_runs: true,
+            aod: true,
+            miniaod: true,
+            nanoaod: true,
+            fraction: true,
+            diff_to_parent: true
+          },
           search: {
             dataset: undefined,
-          }
+          },
+          lastUpdate: undefined,
         },
         created (){
           let urlParams = Object.fromEntries(new URLSearchParams(window.location.search));
@@ -244,11 +281,16 @@
                   // Up to 8 decimal digits
                   item.fraction = parseFloat(item.fraction.toFixed(8)).toString();
                 }
+                if (item.campaign && !(item.campaign in component.campaigns)) {
+                  component.campaigns[item.campaign] = true;
+                }
               });
             });
             component.data = data;
             component.applyFilters();
-            // component.rows = component.rows.sort(component.sortComparator);
+          });
+          $.get( "original_table_timestamp.txt", function( data ) {
+            component.lastUpdate = data;
           });
         },
         methods: {
@@ -350,6 +392,8 @@
                 delete urlParams[attribute]
               }
             }
+            const component = this;
+            filteredRows = filteredRows.filter(element => element.filter(item => item.campaign && component.columns[item.campaign] === false).length == 0);
             this.mergeCells(filteredRows);
             this.rows = filteredRows;
             this.replaceQuery(urlParams);

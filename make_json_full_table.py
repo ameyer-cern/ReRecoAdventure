@@ -1,10 +1,5 @@
 import json
-
-
-def del_attr(item, attr_name):
-    item.pop(attr_name, None)
-    for output_item in item.get('output', []):
-        del_attr(output_item, attr_name)
+import time
 
 
 def get_output_rows(item, path, rows):
@@ -19,32 +14,38 @@ def get_output_rows(item, path, rows):
 
 
 def process_item(item):
-    for attr in ('runs', 'raw_x_dcs_runs', 'aod_whitelist_raw_runs', 'aod_whitelist_x_dcs_raw_runs', 'twiki_runs'):
-        if item.get(attr) is not None:
+    for attr in item.keys():
+        if isinstance(item.get(attr), list) and (attr == 'runs' or attr.endswith('_runs')):
             item[attr] = len(item[attr])
 
     for output_item in item.get('output', []):
         process_item(output_item)
 
 
-def calculate_fractions(item, raw, aod):
-    if 'aod_whitelist_raw_events' in item:
+def calculate_fractions(item, parent):
+    if 'whitelist_runs' in item:
         aod = item
-        aod['whitelist_x_raw_and_dcs_x_raw_surplus_runs'] = len(set(aod['aod_whitelist_raw_runs']) - set(raw['raw_x_dcs_runs']))
-        aod['whitelist_x_raw_and_dcs_x_raw_missing_runs'] = len(set(raw['raw_x_dcs_runs']) - set(aod['aod_whitelist_raw_runs']))
-        aod['whitelist_x_raw_and_dcs_x_raw_events_diff'] = aod['aod_whitelist_raw_events'] - raw['raw_x_dcs_events']
-        aod['whitelist_x_raw_and_whitelist_dcs_x_raw_surplus_runs'] = len(set(aod['aod_whitelist_x_dcs_raw_runs']) - set(raw['raw_x_dcs_runs']))
-        aod['whitelist_x_raw_and_whitelist_dcs_x_raw_missing_runs'] = len(set(raw['raw_x_dcs_runs']) - set(aod['aod_whitelist_x_dcs_raw_runs']))
-        aod['whitelist_x_raw_and_whitelist_dcs_x_raw_events_diff'] = aod['aod_whitelist_x_dcs_raw_events'] - raw['raw_x_dcs_events']
+        aod['whitelist_and_raw_x_dcs_surplus_runs'] = len(set(aod['whitelist_runs']) - set(aod['raw_x_dcs_runs']))
+        aod['whitelist_and_raw_x_dcs_missing_runs'] = len(set(aod['raw_x_dcs_runs']) - set(aod['whitelist_runs']))
+        aod['whitelist_and_raw_x_dcs_events_diff'] = aod['whitelist_events'] - aod['raw_x_dcs_events']
 
-    if aod:
-        item['fraction'] = item['events'] / aod['aod_whitelist_x_dcs_raw_events'] if aod['aod_whitelist_x_dcs_raw_events'] else None
-        item['missing_runs'] = len(set(aod['aod_whitelist_x_dcs_raw_runs']) - set(item['runs']))
-        item['surplus_runs'] = len(set(item['runs']) - set(aod['aod_whitelist_x_dcs_raw_runs']))
-        item['events_difference'] = item['events'] - aod['aod_whitelist_x_dcs_raw_events']
+        aod['whitelist_x_dcs_and_raw_x_dcs_surplus_runs'] = len(set(aod['whitelist_x_dcs_runs']) - set(aod['raw_x_dcs_runs']))
+        aod['whitelist_x_dcs_and_raw_x_dcs_missing_runs'] = len(set(aod['raw_x_dcs_runs']) - set(aod['whitelist_x_dcs_runs']))
+        aod['whitelist_x_dcs_and_raw_x_dcs_events_diff'] = aod['whitelist_x_dcs_events'] - aod['raw_x_dcs_events']
+
+        aod['fraction'] = aod['events'] / aod['raw_x_dcs_events'] if aod['raw_x_dcs_events'] else None
+        aod['missing_runs'] = len(set(aod['raw_x_dcs_runs']) - set(aod['runs']))
+        aod['surplus_runs'] = len(set(aod['runs']) - set(aod['raw_x_dcs_runs']))
+        aod['events_difference'] = aod['events'] - aod['raw_x_dcs_events']
+
+    elif parent:
+        item['fraction'] = item['events'] / parent['events'] if parent['events'] else None
+        item['missing_runs'] = len(set(parent['runs']) - set(item['runs']))
+        item['surplus_runs'] = len(set(item['runs']) - set(parent['runs']))
+        item['events_difference'] = item['events'] - parent['events']
 
     for output_item in item.get('output', []):
-        calculate_fractions(output_item, raw, aod)
+        calculate_fractions(output_item, item)
 
 
 with open('data.json', 'r') as data_file:
@@ -54,7 +55,7 @@ print('Read %s items from data.json' % (len(items)))
 
 results = []
 for item in items:
-    calculate_fractions(item, item, None)
+    calculate_fractions(item, None)
     # Show only lengths of run lists
     process_item(item)
     # Rows of table
@@ -64,3 +65,6 @@ for item in items:
 
 with open('data_full_table.json', 'w') as output_file:
     json.dump(results, output_file, indent=2, sort_keys=True)
+
+with open('full_table_timestamp.txt', 'w') as output_file:
+    output_file.write(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
