@@ -393,7 +393,7 @@
               }
             }
             const component = this;
-            filteredRows = filteredRows.filter(element => element.filter(item => item.campaign && component.columns[item.campaign] === false).length == 0);
+            filteredRows = filteredRows.filter(element => element.filter(item => item.campaign && component.campaigns[item.campaign] === false).length == 0);
             this.mergeCells(filteredRows);
             this.rows = filteredRows;
             this.replaceQuery(urlParams);
