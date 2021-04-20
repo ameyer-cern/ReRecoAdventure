@@ -84,7 +84,6 @@
 /DoubleMuon/Run2017E-v1/RAW
 /DoubleMuon/Run2017F-v1/RAW
 /DoubleMuon/Run2017G-v1/RAW
-/DoubleMuon/Run2017H-v1/RAW
 /DoubleMuonLowMass/Run2017B-v1/RAW
 /DoubleMuonLowMass/Run2017C-v1/RAW
 /DoubleMuonLowMass/Run2017D-v1/RAW
@@ -148,7 +147,6 @@
 /HeavyFlavor/Run2017G-v1/RAW
 /HighEGJet/Run2017F-v1/RAW
 /HighEGJet/Run2017G-v1/RAW
-/HighEGJet/Run2017H-v1/RAW
 /HighPtLowerPhotons/Run2017B-v1/RAW
 /HighPtLowerPhotons/Run2017C-v1/RAW
 /HighPtLowerPhotons/Run2017E-v1/RAW
@@ -157,7 +155,6 @@
 /HighPtPhoton30AndZ/Run2017E-v1/RAW
 /LowEGJet/Run2017F-v1/RAW
 /LowEGJet/Run2017G-v1/RAW
-/LowEGJet/Run2017H-v1/RAW
 /MinimumBias/Run2017B-v1/RAW
 /MinimumBias/Run2017C-v1/RAW
 /MinimumBias/Run2017D-v1/RAW
@@ -170,7 +167,6 @@
 /ZeroBias/Run2017D-v1/RAW
 /ZeroBias/Run2017E-v1/RAW
 /ZeroBias/Run2017F-v1/RAW
-/ZeroBias/Run2017H-v1/RAW
 /BTagCSV/Run2016B-v1/RAW
 /BTagCSV/Run2016B-v2/RAW
 /BTagCSV/Run2016C-v2/RAW
