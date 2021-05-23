@@ -102,9 +102,9 @@ for item in items:
                   'whitelist_x_dcs_runs': len(whitelist_x_dcs_runs),
                   'whitelist_x_dcs_events': whitelist_x_dcs_events,
 
-                  'twiki_and_raw_x_dcs_missing_runs': len(raw_x_dcs_runs - twiki_runs),
-                  'twiki_and_raw_x_dcs_surplus_runs': len(twiki_runs - raw_x_dcs_runs),
-                  'twiki_and_raw_x_dcs_runs_diff': len(raw_x_dcs_runs - twiki_runs) + len(twiki_runs - raw_x_dcs_runs),
+                  'twiki_and_whitelist_missing_runs': len(whitelist_runs - twiki_runs),
+                  'twiki_and_whitelist_surplus_runs': len(twiki_runs - whitelist_runs),
+                  'twiki_and_whitelist_runs_diff': len(whitelist_runs - twiki_runs) + len(twiki_runs - whitelist_runs),
 
                   'whitelist_and_raw_x_dcs_missing_runs': len(raw_x_dcs_runs - whitelist_runs),
                   'whitelist_and_raw_x_dcs_surplus_runs': len(whitelist_runs - raw_x_dcs_runs),
