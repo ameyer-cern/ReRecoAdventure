@@ -135,9 +135,9 @@ for item in items:
                 result[prefix + '_vs_parent_surplus_runs'] = len(runs - set(parent.get('runs', [])))
                 result[prefix + '_vs_parent_runs_diff'] = result[prefix + '_vs_parent_missing_runs'] + result[prefix + '_vs_parent_surplus_runs']
             elif dataset:
-                result[prefix + '_produced_vs_parent_ratio'] = float(events) / whitelist_x_dcs_events if whitelist_x_dcs_events else None
-                result[prefix + '_vs_parent_missing_runs'] = len(whitelist_x_dcs_runs - runs)
-                result[prefix + '_vs_parent_surplus_runs'] = len(runs - whitelist_x_dcs_runs)
+                result[prefix + '_produced_vs_parent_ratio'] = float(events) / whitelist_events if whitelist_events else None
+                result[prefix + '_vs_parent_missing_runs'] = len(whitelist_runs - runs)
+                result[prefix + '_vs_parent_surplus_runs'] = len(runs - whitelist_runs)
                 result[prefix + '_vs_parent_runs_diff'] = result[prefix + '_vs_parent_missing_runs'] + result[prefix + '_vs_parent_surplus_runs']
 
         results.append(result)
