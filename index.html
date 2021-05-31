@@ -155,6 +155,8 @@
             <span class="sort" @click="changeSortToColumn('whitelist_runs')">Whitelist runs</span>
             <br>
             <small class="sort" @click="changeSortToColumn('whitelist_events')">Whitelist events</small>
+            <br>
+            <i>Expected</i>
           </th>
           <th v-if="columns.whitelist_x_dcs_runs" rowspan=2 :class="sortOn == 'whitelist_x_dcs_runs' || sortOn == 'whitelist_x_dcs_events' ? 'sorted-by' : ''">
             <span class="sort" @click="changeSortToColumn('whitelist_x_dcs_runs')">Whitelist x DCS runs</span>
@@ -165,12 +167,9 @@
             <span class="sort" @click="changeSortToColumn('raw_x_dcs_runs')">RAW x DCS runs</span>
             <br>
             <small class="sort" @click="changeSortToColumn('raw_x_dcs_events')">RAW x DCS events</small>
-            <br>
-            <i>Expected</i>
           </th>
           <th v-if="columns.whitelist_and_raw_x_dcs_runs" rowspan=2 :class="sortOn == 'whitelist_and_raw_x_dcs_runs' ? 'sorted-by' : ''">
             <span class="sort" @click="changeSortToColumn('whitelist_and_raw_x_dcs_runs')">Diff Whitelist and<br>RAW x DCS runs</span>
-            <br><small style="color:red">Should be none!</small>
           </th>
           <th v-if="columns.twiki" colspan=2>
             TWiki
@@ -210,8 +209,8 @@
           <th v-if="columns.twiki" :class="sortOn == 'twiki_runs' ? 'sorted-by' : ''">
             <span class="sort" @click="changeSortToColumn('twiki_runs')">Runs</span>
           </th>
-          <th v-if="columns.twiki" :class="sortOn == 'twiki_and_raw_x_dcs_runs_diff' ? 'sorted-by' : ''">
-            <span class="sort" @click="changeSortToColumn('twiki_and_raw_x_dcs_runs_diff')">Diff to RAW x DCS</span>
+          <th v-if="columns.twiki" :class="sortOn == 'twiki_and_whitelist_runs_diff' ? 'sorted-by' : ''">
+            <span class="sort" @click="changeSortToColumn('twiki_and_whitelist_runs_diff')">Diff to Whitelist</span>
           </th>
           <template v-if="columns.aod">
             <th :class="sortOn == 'aod_dataset' || sortOn == 'aod_prepid' ? 'sorted-by' : ''">
@@ -220,7 +219,7 @@
               <small class="sort" @click="changeSortToColumn('aod_prepid')">PrepID</small>
             </th>
             <th :class="sortOn == 'aod_runs_diff' ? 'sorted-by' : ''" v-if="columns.diff_produced_vs_parent">
-              <span class="sort" @click="changeSortToColumn('aod_vs_parent_runs_diff')">Diff to RAW x DCS</span>
+              <span class="sort" @click="changeSortToColumn('aod_vs_parent_runs_diff')">Diff to Whitelist</span>
             </th>
             <th :class="sortOn == 'aod_produced_vs_parent_ratio' || sortOn == 'aod_events'  ? 'sorted-by' : ''" v-if="columns.produced_expected">
               <span class="sort" @click="changeSortToColumn('aod_produced_vs_parent_ratio')">Produced/Expected</span>
@@ -321,11 +320,11 @@
           </td>
           <td v-if="columns.twiki" >{{row.twiki_runs}} runs</td>
           <td v-if="columns.twiki" >
-            <template v-if="row.twiki_and_raw_x_dcs_surplus_runs">
-              Surplus {{row.twiki_and_raw_x_dcs_surplus_runs}} runs<br>
+            <template v-if="row.twiki_and_whitelist_surplus_runs">
+              Surplus {{row.twiki_and_whitelist_surplus_runs}} runs<br>
             </template>
-            <template v-if="row.twiki_and_raw_x_dcs_missing_runs">
-              Missing {{row.twiki_and_raw_x_dcs_missing_runs}} runs<br>
+            <template v-if="row.twiki_and_whitelist_missing_runs">
+              Missing {{row.twiki_and_whitelist_missing_runs}} runs<br>
             </template>
           </td>
           <template v-if="columns.aod">
@@ -342,11 +341,11 @@
                 <template v-if="row['aod_vs_parent_missing_runs']">
                   Missing {{row['aod_vs_parent_missing_runs']}} runs<br>
                 </template>
-                <template v-if="row['aod_events'] > row['whitelist_x_dcs_events']">
-                  Surplus {{row['aod_events'] - row['whitelist_x_dcs_events']}} events
+                <template v-if="row['aod_events'] > row['whitelist_events']">
+                  Surplus {{row['aod_events'] - row['whitelist_events']}} events
                 </template>
-                <template v-if="row['aod_events'] < row['whitelist_x_dcs_events']">
-                  Missing {{row['whitelist_x_dcs_events'] - row['aod_events']}} events
+                <template v-if="row['aod_events'] < row['whitelist_events']">
+                  Missing {{row['whitelist_events'] - row['aod_events']}} events
                 </template>
               </td>
               <td v-if="columns.produced_expected">
