@@ -128,7 +128,8 @@ def get_prepid_and_dataset(workflows, datatiers, year_dict):
                     prepid = workflow['PrepID']
                     dataset = dataset_name
                     dataset_type = info['Type']
-                    events = info['Events']
+                    # Getting events from DAS and not Stats
+                    events = das_get_events(dataset)
                     processing_string = workflow['ProcessingString']
                     for res in results:
                         if res['dataset'] == dataset:
