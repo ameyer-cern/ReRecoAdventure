@@ -3,6 +3,7 @@ import csv
 import json
 import os
 import random
+import re
 from stats_rest import Stats2
 from connection_wrapper import ConnectionWrapper
 from json import dumps
@@ -13,6 +14,38 @@ cmsweb = ConnectionWrapper('cmsweb.cern.ch', keep_open=True)
 das_events_cache = {}
 das_runs_cache = {}
 das_events_of_runs_cache = {}
+dataset_blacklist = ['/*/*LowPU*/*AOD',
+                     '/*/*DQMresub*/*AOD',
+                     '/*/*EcalRecovery*/*AOD',
+                     '/*/*WMass*/*AOD']
+
+
+def make_regex_matcher(pattern):
+    """
+    Compile a regex pattern and return a function that performs fullmatch on
+    given value
+    """
+    compiled_pattern = re.compile(pattern)
+    def matcher_function(value):
+        """
+        Return whether given value fully matches the pattern
+        """
+        return compiled_pattern.fullmatch(value)
+
+    return matcher_function
+
+
+dataset_blacklist = [make_regex_matcher(x.replace('*', '.*')) for x in dataset_blacklist]
+def is_dataset_in_blacklist(dataset_name):
+    """
+    Return whether given dataset is in blacklist
+    """
+    for ds_check in dataset_blacklist:
+        if ds_check(dataset_name):
+            return True
+
+    return False
+
 
 def chunkify(items, chunk_size):
     """
@@ -127,6 +160,10 @@ def get_prepid_and_dataset(workflows, datatiers, year_dict):
                 if ds_datatier == datatiers[0]:
                     prepid = workflow['PrepID']
                     dataset = dataset_name
+                    if is_dataset_in_blacklist(dataset):
+                        print('Skipping %s because it is blacklisted' % (dataset))
+                        continue
+
                     dataset_type = info['Type']
                     # Getting events from DAS and not Stats
                     events = das_get_events(dataset)
