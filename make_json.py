@@ -221,7 +221,7 @@ years = {'2016': {'twiki_file_name': '2016ULdataFromTwiki.txt',
                                             'MiniAODv2': ['UL2017_MiniAODv2']},
                                 'NANOAOD': {'NanoAODv6': ['Nano02Dec2019', 'UL2017_02Dec2019', 'UL2017_Nano02Dec2019', 'UL2017_Nano02Dec2019_rsb'],
                                             'NanoAODv8': ['UL2017_MiniAODv1_NanoAODv2'],
-                                            'NanoAODv9': []}}},
+                                            'NanoAODv9': ['UL2017_MiniAODv2_NanoAODv9', 'UL2017_MiniAODv2_NanoAODv9_pilot']}}},
          '2018': {'twiki_file_name': '2018ULdataFromTwiki.txt',
                   'dcs_json_path': '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/DCSOnly/json_DCSONLY.txt',
                   'campaigns': {'AOD':     {'AOD':       ['12Nov2019_UL2018_rsb_v3', '12Nov2019_UL2018_rsb_v2', '12Nov2019_UL2018_rsb', '12Nov2019_UL2018']},
@@ -229,7 +229,7 @@ years = {'2016': {'twiki_file_name': '2016ULdataFromTwiki.txt',
                                             'MiniAODv2': ['UL2018_MiniAODv2']},
                                 'NANOAOD': {'NanoAODv6': ['Nano02Dec2019', 'Nano02Dec2019_12Nov2019_UL2018', 'Nano02Dec2019_12Nov2019_UL2018_rsb', 'Nano02Dec2019_12Nov2019_UL2018_rsb_v2'],
                                             'NanoAODv8': ['UL2018_MiniAODv1_NanoAODv2'],
-                                            'NanoAODv9': []}}}}
+                                            'NanoAODv9': ['UL2018_MiniAODv2_NanoAODv9', 'UL2018_MiniAODv2_NanoAODv9_pilot']}}}}
 
 exception_2016F_HIPM_runs = set([277932, 277934, 277981, 277991, 277992, 278017,
                                  278018, 278167, 278175, 278193, 278239, 278240,
