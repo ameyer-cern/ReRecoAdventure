@@ -100,11 +100,6 @@
         /> MiniAODv1
         <input
           type="checkbox"
-          :checked="columns.miniaod_v1_nanoaod_v6"
-          @input="columns.miniaod_v1_nanoaod_v6 = $event.target.checked"
-        /> MiniAODv1 NanoAODv6
-        <input
-          type="checkbox"
           :checked="columns.miniaod_v1_nanoaod_v8"
           @input="columns.miniaod_v1_nanoaod_v8 = $event.target.checked"
         /> MiniAODv1 NanoAODv8
@@ -184,11 +179,6 @@
             <br>
             <input type="text" class="header-search" placeholder="Type to search..." v-model="search.miniaod_v1_dataset" @input="applyFilters()">
           </th>
-          <th v-if="columns.miniaod_v1_nanoaod_v6" :colspan="columns.diff_produced_vs_parent && columns.produced_expected ? 3 : columns.diff_produced_vs_parent || columns.produced_expected ? 2 : 1">
-            MiniAODv1 NanoAODv6
-            <br>
-            <input type="text" class="header-search" placeholder="Type to search..." v-model="search.miniaod_v1_nanoaod_v6_dataset" @input="applyFilters()">
-          </th>
           <th v-if="columns.miniaod_v1_nanoaod_v8" :colspan="columns.diff_produced_vs_parent && columns.produced_expected ? 3 : columns.diff_produced_vs_parent || columns.produced_expected ? 2 : 1">
             MiniAODv1 NanoAODv8
             <br>
@@ -240,21 +230,6 @@
               <span class="sort" @click="changeSortToColumn('miniaod_v1_produced_vs_parent_ratio')">Produced/Expected</span>
               <br>
               <small class="sort" @click="changeSortToColumn('miniaod_v1_events')">Produced events</small>
-            </th>
-          </template>
-          <template v-if="columns.miniaod_v1_nanoaod_v6">
-            <th :class="sortOn == 'miniaod_v1_nanoaod_v6_dataset' || sortOn == 'miniaod_v1_nanoaod_v6_prepid' ? 'sorted-by' : ''">
-              <span class="sort" @click="changeSortToColumn('miniaod_v1_nanoaod_v6_dataset')">Dataset</span>&nbsp;
-              <br>
-              <small class="sort" @click="changeSortToColumn('miniaod_v1_nanoaod_v6_prepid')">PrepID</small>
-            </th>
-            <th :class="sortOn == 'miniaod_v1_nanoaod_v6_runs_diff' ? 'sorted-by' : ''" v-if="columns.diff_produced_vs_parent">
-              <span class="sort" @click="changeSortToColumn('miniaod_v1_nanoaod_v6_vs_parent_runs_diff')">Diff to parent</span>
-            </th>
-            <th :class="sortOn == 'miniaod_v1_nanoaod_v6_produced_vs_parent_ratio' || sortOn == 'miniaod_v1_nanoaod_v6_events'  ? 'sorted-by' : ''" v-if="columns.produced_expected">
-              <span class="sort" @click="changeSortToColumn('miniaod_v1_nanoaod_v6_produced_vs_parent_ratio')">Produced/Expected</span>
-              <br>
-              <small class="sort" @click="changeSortToColumn('miniaod_v1_nanoaod_v6_events')">Produced events</small>
             </th>
           </template>
           <template v-if="columns.miniaod_v1_nanoaod_v8">
@@ -360,7 +335,6 @@
             </template>
           </template>
 
-
           <template v-if="columns.miniaod_v1">
             <td :class="row['miniaod_v1_dataset_status'] == 'PRODUCTION' ? 'orange-cell' : ''">
               <a target="_blank" :href="makeDASLink(row['miniaod_v1_dataset'])">{{row['miniaod_v1_dataset']}}</a>
@@ -386,39 +360,6 @@
                 {{row['miniaod_v1_produced_vs_parent_ratio']}}
                 <br>
                 <small>{{row['miniaod_v1_events']}} events</small>
-              </td>
-            </template>
-            <template v-else>
-              <td v-if="columns.diff_produced_vs_parent"></td>
-              <td v-if="columns.produced_expected"></td>
-            </template>
-          </template>
-
-          <template v-if="columns.miniaod_v1_nanoaod_v6">
-            <td :class="row['miniaod_v1_nanoaod_v6_dataset_status'] == 'PRODUCTION' ? 'orange-cell' : ''">
-              <a target="_blank" :href="makeDASLink(row['miniaod_v1_nanoaod_v6_dataset'])">{{row['miniaod_v1_nanoaod_v6_dataset']}}</a>
-              <br>
-              <small><a target="_blank" :href="makeDimaLink(row['miniaod_v1_nanoaod_v6_prepid'])">{{row['miniaod_v1_nanoaod_v6_prepid']}}</a></small>
-            </td>
-            <template v-if="row['miniaod_v1_nanoaod_v6_dataset']">
-              <td v-if="columns.diff_produced_vs_parent">
-                <template v-if="row['miniaod_v1_nanoaod_v6_vs_parent_surplus_runs']">
-                  Surplus {{row['miniaod_v1_nanoaod_v6_vs_parent_surplus_runs']}} runs<br>
-                </template>
-                <template v-if="row['miniaod_v1_nanoaod_v6_vs_parent_missing_runs']">
-                  Missing {{row['miniaod_v1_nanoaod_v6_vs_parent_missing_runs']}} runs<br>
-                </template>
-                <template v-if="row['miniaod_v1_nanoaod_v6_events'] > row['miniaod_v1_events']">
-                  Surplus {{row['miniaod_v1_nanoaod_v6_events'] - row['miniaod_v1_events']}} events
-                </template>
-                <template v-if="row['miniaod_v1_nanoaod_v6_events'] < row['miniaod_v1_events']">
-                  Missing {{row['miniaod_v1_events'] - row['miniaod_v1_nanoaod_v6_events']}} events
-                </template>
-              </td>
-              <td v-if="columns.produced_expected">
-                {{row['miniaod_v1_nanoaod_v6_produced_vs_parent_ratio']}}
-                <br>
-                <small>{{row['miniaod_v1_nanoaod_v6_events']}} events</small>
               </td>
             </template>
             <template v-else>
@@ -537,13 +478,12 @@
           rows: [],
           sortOn: 'year',
           sortOrder: 1,
-          prefixes: ['aod', 'miniaod_v1', 'miniaod_v1_nanoaod_v6', 'miniaod_v1_nanoaod_v8', 'miniaod_v2', 'miniaod_v2_nanoaod_v9'],
+          prefixes: ['aod', 'miniaod_v1', 'miniaod_v1_nanoaod_v8', 'miniaod_v2', 'miniaod_v2_nanoaod_v9'],
           search: {
             input_dataset: undefined,
             aod_dataset: undefined,
             miniaod_v1_dataset: undefined,
             miniaod_v2_dataset: undefined,
-            miniaod_v1_nanoaod_v6_dataset: undefined,
             miniaod_v1_nanoaod_v8_dataset: undefined,
             miniaod_v2_nanoaod_v9_dataset: undefined,
           },
@@ -558,7 +498,6 @@
             produced_expected: true,
             aod: true,
             miniaod_v1: true,
-            miniaod_v1_nanoaod_v6: false,
             miniaod_v1_nanoaod_v8: true,
             miniaod_v2: true,
             miniaod_v2_nanoaod_v9: true,
@@ -571,7 +510,6 @@
           this.search.aod_dataset = urlParams.aod_dataset;
           this.search.miniaod_v1_dataset = urlParams.miniaod_v1_dataset;
           this.search.miniaod_v2_dataset = urlParams.miniaod_v2_dataset;
-          this.search.miniaod_v1_nanoaod_v6_dataset = urlParams.miniaod_v1_nanoaod_v6_dataset;
           this.search.miniaod_v1_nanoaod_v8_dataset = urlParams.miniaod_v1_nanoaod_v8_dataset;
           this.search.miniaod_v2_nanoaod_v9_dataset = urlParams.miniaod_v2_nanoaod_v9_dataset;
 

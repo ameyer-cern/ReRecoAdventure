@@ -52,7 +52,6 @@ for item in items:
     for aod in aods:
         miniaod_v1 = pick_output_item(aod.get('output'), 'MiniAODv1')
         miniaod_v2 = pick_output_item(aod.get('output'), 'MiniAODv2')
-        miniaod_v1_nanoaod_v6 = pick_output_item(miniaod_v1.get('output'), 'NanoAODv6')
         miniaod_v1_nanoaod_v8 = pick_output_item(miniaod_v1.get('output'), 'NanoAODv8')
         miniaod_v2_nanoaod_v9 = pick_output_item(miniaod_v2.get('output'), 'NanoAODv9')
 
@@ -61,9 +60,6 @@ for item in items:
 
         if miniaod_v1:
             print('  MiniAODv1: %s (%s)' % (miniaod_v1['dataset'], miniaod_v1['type']))
-
-        if miniaod_v1_nanoaod_v6:
-            print('    MiniAODv1 NanoAODv6: %s (%s)' % (miniaod_v1_nanoaod_v6['dataset'], miniaod_v1_nanoaod_v6['type']))
 
         if miniaod_v1_nanoaod_v8:
             print('    MiniAODv1 NanoAODv8: %s (%s)' % (miniaod_v1_nanoaod_v8['dataset'], miniaod_v1_nanoaod_v8['type']))
@@ -113,7 +109,6 @@ for item in items:
 
         for prefix, (thing, parent) in {'aod': (aod, None),
                                         'miniaod_v1': (miniaod_v1, aod),
-                                        'miniaod_v1_nanoaod_v6': (miniaod_v1_nanoaod_v6, miniaod_v1),
                                         'miniaod_v1_nanoaod_v8': (miniaod_v1_nanoaod_v8, miniaod_v1),
                                         'miniaod_v2': (miniaod_v2, aod),
                                         'miniaod_v2_nanoaod_v9': (miniaod_v2_nanoaod_v9, miniaod_v2)}.items():
