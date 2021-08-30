@@ -14,8 +14,7 @@ cmsweb = ConnectionWrapper('cmsweb.cern.ch', keep_open=True)
 das_events_cache = {}
 das_runs_cache = {}
 das_events_of_runs_cache = {}
-dataset_blacklist = ['/*/*LowPU*/*AOD',
-                     '/*/*DQMresub*/*AOD',
+dataset_blacklist = ['/*/*DQMresub*/*AOD',
                      '/*/*EcalRecovery*/*AOD',
                      '/*/*WMass*/*AOD']
 
