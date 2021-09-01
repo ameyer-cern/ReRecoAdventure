@@ -17,7 +17,7 @@ das_events_of_runs_cache = {}
 dataset_blacklist = ['/*/*DQMresub*/*AOD',
                      '/*/*EcalRecovery*/*AOD',
                      '/*/*WMass*/*AOD']
-
+campaign_blacklist = ['NanoAODv6']
 
 def make_regex_matcher(pattern):
     """
@@ -41,6 +41,18 @@ def is_dataset_in_blacklist(dataset_name):
     """
     for ds_check in dataset_blacklist:
         if ds_check(dataset_name):
+            return True
+
+    return False
+
+
+campaign_blacklist = [make_regex_matcher(x.replace('*', '.*')) for x in campaign_blacklist]
+def is_campaign_in_blacklist(campaign):
+    """
+    Return whether given campaign is in blacklist
+    """
+    for ds_check in campaign_blacklist:
+        if ds_check(campaign):
             return True
 
     return False
@@ -157,37 +169,40 @@ def get_prepid_and_dataset(workflows, datatiers, year_dict):
             if info['Type'] in ('PRODUCTION', 'VALID'):
                 ds_datatier = dataset_name.split('/')[-1]
                 if ds_datatier == datatiers[0]:
-                    prepid = workflow['PrepID']
-                    dataset = dataset_name
-                    if is_dataset_in_blacklist(dataset):
-                        print('Skipping %s because it is blacklisted' % (dataset))
-                        continue
-
                     dataset_type = info['Type']
-                    # Getting events from DAS and not Stats
-                    events = das_get_events(dataset)
-                    processing_string = workflow['ProcessingString']
+                    prepid = workflow['PrepID']
+                    print('    Looking at %s (%s) of %s' % (dataset_name, dataset_type, prepid))
                     for res in results:
-                        if res['dataset'] == dataset:
+                        # Skip if we've already seen the dataset
+                        if res['dataset'] == dataset_name:
                             break
                     else:
-                        runs = das_get_runs(dataset)
-                        item = {'dataset': dataset,
-                                'type': dataset_type,
-                                'prepid': prepid,
-                                'runs': list(runs),
-                                'events': events,
-                                'output': get_prepid_and_dataset([workflow], datatiers[1:], year_dict),
-                                'workflow': workflow['RequestName'],
-                                'processing_string': processing_string}
-                        item['output'].extend(get_prepid_and_dataset(get_workflows_for_input(dataset), datatiers[1:], year_dict))
+                        if is_dataset_in_blacklist(dataset_name):
+                            print('      Skipping %s because it is blacklisted' % (dataset_name))
+                            continue
+
+                        processing_string = workflow['ProcessingString']
                         campaign = '<other>'
                         for campaign_name, campaign_tags in year_dict['campaigns'][ds_datatier].items():
                             if processing_string in campaign_tags:
                                 campaign = campaign_name
                                 break
 
-                        item['campaign'] = campaign
+                        if is_campaign_in_blacklist(campaign):
+                            print('      Skipping %s because campaign is blacklisted' % (dataset_name))
+                            continue
+
+                        runs = das_get_runs(dataset_name)
+                        item = {'dataset': dataset_name,
+                                'campaign': campaign,
+                                'type': dataset_type,
+                                'prepid': prepid,
+                                'runs': list(runs),
+                                'events': das_get_events(dataset_name),  # Getting events from DAS and not Stats
+                                'output': get_prepid_and_dataset([workflow], datatiers[1:], year_dict),
+                                'workflow': workflow['RequestName'],
+                                'processing_string': processing_string}
+                        item['output'].extend(get_prepid_and_dataset(get_workflows_for_input(dataset_name), datatiers[1:], year_dict))
                         results.append(item)
 
     return results
