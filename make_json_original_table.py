@@ -9,6 +9,10 @@ def pick_output_item(items, campaign, processing_string=None):
     for dataset_type in ('VALID', 'PRODUCTION'):
         for item in reversed(sorted(items, key=lambda x: '_'.join(x['workflow'].split('_')[-3:]))):
             if item['type'] == dataset_type and item['campaign'] == campaign:
+                if 'LowPU' in item['processing_string']:
+                    # Because in this table we _explicitly_ don't care about LowPU requests
+                    continue
+
                 if not processing_string or processing_string == item['processing_string']:
                     return item
 

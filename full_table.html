@@ -74,6 +74,13 @@
           /> {{campaign}}
         </template>
         <br>
+        LowPU:
+        <input
+          type="checkbox"
+          :checked="showLowPU"
+          @input="showLowPU = $event.target.checked; applyFilters()"
+        />
+        <br>
         Columns:
         <template v-for="(_, column) in columns">
           <input
@@ -263,6 +270,7 @@
             fraction: true,
             diff_to_parent: true
           },
+          showLowPU: true,
           search: {
             dataset: undefined,
           },
@@ -387,15 +395,24 @@
             let urlParams = Object.fromEntries(new URLSearchParams(window.location.search));
             for (let attribute in this.search) {
               if (this.search[attribute]) {
-                const pattern = this.search[attribute].replace(/\.\*/g, '*').replace(/ /g, '*').replace(/\*/g, '.*');
+                let negate = false;
+                let pattern = this.search[attribute]
+                if (pattern[0] == '-') {
+                  negate = true;
+                  pattern = pattern.substring(1);
+                }
+                pattern = pattern.replace(/\.\*/g, '*').replace(/ /g, '*').replace(/\*/g, '.*');
                 const regex = RegExp(pattern, 'i'); // 'i' for case insensitivity
-                filteredRows = filteredRows.filter(entry => entry[0][attribute] != '' && regex.test(entry[0][attribute]));
+                filteredRows = filteredRows.filter(entry => entry[0][attribute] != '' && (regex.test(entry[0][attribute]) ^ negate));
                 urlParams[attribute] = this.search[attribute];
               } else {
                 delete urlParams[attribute]
               }
             }
             const component = this;
+            if (!this.showLowPU) {
+              filteredRows = filteredRows.filter(element => element.filter(item => item.lowpu !== undefined && !item.lowpu).length != 0);
+            }
             filteredRows = filteredRows.filter(element => element.filter(item => item.campaign && component.campaigns[item.campaign] === false).length == 0);
             this.mergeCells(filteredRows);
             this.rows = filteredRows;

@@ -37,12 +37,14 @@ def calculate_fractions(item, parent):
         aod['missing_runs'] = len(set(aod['raw_x_dcs_runs']) - set(aod['runs']))
         aod['surplus_runs'] = len(set(aod['runs']) - set(aod['raw_x_dcs_runs']))
         aod['events_difference'] = aod['events'] - aod['raw_x_dcs_events']
+        aod['lowpu'] = 'LowPU' in aod['processing_string']
 
     elif parent:
         item['fraction'] = item['events'] / parent['events'] if parent['events'] else None
         item['missing_runs'] = len(set(parent['runs']) - set(item['runs']))
         item['surplus_runs'] = len(set(item['runs']) - set(parent['runs']))
         item['events_difference'] = item['events'] - parent['events']
+        item['lowpu'] = bool(('LowPU' in item['processing_string']) or parent.get('lowpu', False))
 
     for output_item in item.get('output', []):
         calculate_fractions(output_item, item)

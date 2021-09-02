@@ -576,9 +576,15 @@
             let urlParams = Object.fromEntries(new URLSearchParams(window.location.search));
             for (let attribute in this.search) {
               if (this.search[attribute]) {
-                const pattern = this.search[attribute].replace(/\.\*/g, '*').replace(/ /g, '*').replace(/\*/g, '.*');
+                let negate = false;
+                let pattern = this.search[attribute]
+                if (pattern[0] == '-') {
+                  negate = true;
+                  pattern = pattern.substring(1);
+                }
+                pattern = pattern.replace(/\.\*/g, '*').replace(/ /g, '*').replace(/\*/g, '.*');
                 const regex = RegExp(pattern, 'i'); // 'i' for case insensitivity
-                filteredRows = filteredRows.filter(entry => entry[attribute] != '' && regex.test(entry[attribute]));
+                filteredRows = filteredRows.filter(entry => entry[attribute] != '' && (regex.test(entry[attribute]) ^ negate));
                 urlParams[attribute] = this.search[attribute];
               } else {
                 delete urlParams[attribute]

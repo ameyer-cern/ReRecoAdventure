@@ -6,7 +6,6 @@ import random
 import re
 from stats_rest import Stats2
 from connection_wrapper import ConnectionWrapper
-from json import dumps
 
 
 stats = Stats2(cookie='stats-cookie.txt')
@@ -111,6 +110,7 @@ def das_get_events_of_runs(dataset, runs, try_to_chunkify=True):
     das_events_of_runs_cache[key] = 0
     return 0
 
+
 def das_get_runs(dataset):
     if not dataset:
         return []
@@ -122,6 +122,7 @@ def das_get_runs(dataset):
     result = set([int(r.strip()) for r in stream.read().split('\n') if r.strip()])
     das_runs_cache[dataset] = result
     return result
+
 
 def get_twiki_file(file_name):
     if not file_name:
