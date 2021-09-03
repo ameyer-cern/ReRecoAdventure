@@ -410,10 +410,13 @@
               }
             }
             const component = this;
-            if (!this.showLowPU) {
-              filteredRows = filteredRows.filter(element => element.filter(item => item.lowpu !== undefined && !item.lowpu).length != 0);
-            }
             filteredRows = filteredRows.filter(element => element.filter(item => item.campaign && component.campaigns[item.campaign] === false).length == 0);
+            if (!this.showLowPU) {
+              filteredRows = filteredRows.map(element => element.filter(item => item.lowpu === undefined || !item.lowpu));
+            }
+            // Keep at least one row fow each RAW, even if it's empty
+            // If there are more than one row for a certain RAW, empty rows can be deleted
+            filteredRows = filteredRows.filter((element, index) => index == 0 || element.length > 1 || filteredRows[index - 1][0].dataset != element[0].dataset);
             this.mergeCells(filteredRows);
             this.rows = filteredRows;
             this.replaceQuery(urlParams);
