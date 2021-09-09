@@ -126,6 +126,7 @@
 /SingleMuon/Run2017E-v1/RAW
 /SingleMuon/Run2017F-v1/RAW
 /SingleMuon/Run2017G-v1/RAW
+/SingleMuon/Run2017H-v1/RAW
 /SinglePhoton/Run2017B-v1/RAW
 /SinglePhoton/Run2017C-v1/RAW
 /SinglePhoton/Run2017D-v1/RAW
@@ -171,6 +172,8 @@
 /ZeroBias/Run2017D-v1/RAW
 /ZeroBias/Run2017E-v1/RAW
 /ZeroBias/Run2017F-v1/RAW
+/ZeroBias/Run2017G-v1/RAW
+/ZeroBias/Run2017H-v1/RAW
 /BTagCSV/Run2016B-v1/RAW
 /BTagCSV/Run2016B-v2/RAW
 /BTagCSV/Run2016C-v2/RAW
